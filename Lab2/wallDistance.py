@@ -7,12 +7,13 @@ import time
 class wallDistance(tof,servos):
     def __init__(self):
         super().__init__()
-        self.e_t = self.u_t =self. y_t = self.u_rt = 0
+        self.e_t = self.u_t =self. y_t = self.u_rt =0
+        self.sleep_interval=1
 
 
-    def pControl(self,y_t,k_p,r_t):
+    def pControl(self,k_p,r_t):
         #P controller function
-        self.e_t = float(r_t) - float(y_t)
+        self.e_t = float(r_t) - (float(self.y_t)/25.4)
         self.u_t = float(k_p) * self.e_t
         self.u_rt = self.fSat(self.u_t)
         if self.e_t == 0:
@@ -24,7 +25,7 @@ class wallDistance(tof,servos):
             speeds=self.getSpeedsIPS(self.u_rt, self.u_rt)
             lSpd=self.fSat(speeds[0])
             rSpd=self.fSat(speeds[1])
-
+            self.y_t=((lSpd+rSpd)*self.sleep_interval)/2
             # setting the speed on the Servos
             self.setSpeedsIPS(lSpd,rSpd);
 
@@ -42,10 +43,15 @@ class wallDistance(tof,servos):
             return velSig
 
     def towardsWall(self,desired_dist,p):
+        self.csvReader()
+        self.y_t = self.forwardSensor()
         while True:
             print("Walking towards Wall")
-            self.pControl(desired_dist,p,self.forwardSensor())
-            time.sleep(1) #might need to be half second or faster...
+            if self.y_t==desired_dist:
+                self.stopRobot()
+            else:
+                self.pControl(desired_dist,p)
+            time.sleep(self.sleep_interval) #might need to be half second or faster...
 
 
 
@@ -62,8 +68,6 @@ class wallDistance(tof,servos):
         if int(inputOption) == 1:
             self.calibrateSpeed()
         elif int(inputOption) == 2:
-            self.csvReader()
-        elif int(inputOption) == 3:
             print("Please provide desired distance of the goal: ", end="")
             desired_dist = input()
             print("Please provide proportional gain or correction error gain: ", end="")
