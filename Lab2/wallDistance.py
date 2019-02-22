@@ -1,9 +1,10 @@
 #wallDistance.py - *move robot to w/in 5inches of the wall using a P controlller*
-from servos import servos
+
 from tof import tof
+from servos import servos
 import time
 
-class wallDistance:
+class wallDistance(tof,servos):
     def __init__(self):
         super().__init__()
         self.e_t = self.u_t =self. y_t = self.u_rt = 0
@@ -11,8 +12,8 @@ class wallDistance:
 
     def pControl(self,y_t,k_p,r_t):
         #P controller function
-        self.e_t = self.r_t - self.y_t
-        self.u_t = self.k_p * self.e_t
+        self.e_t = float(r_t) - float(y_t)
+        self.u_t = float(k_p) * self.e_t
         self.u_rt = self.fSat(self.u_t)
         if self.e_t == 0:
             self.stopRobot()
@@ -20,12 +21,12 @@ class wallDistance:
             #setPWM to 1.5 STOP condition at expected distance
             #stay w/in infinite loop to check if robot is move
         else:
-            speeds=self.getSpeedIPS(self.u_rt, self.u_rt)
+            speeds=self.getSpeedsIPS(self.u_rt, self.u_rt)
             lSpd=self.fSat(speeds[0])
             rSpd=self.fSat(speeds[1])
 
             # setting the speed on the Servos
-            self.setSpeedIPS(lSpd,rSpd);
+            self.setSpeedsIPS(lSpd,rSpd);
 
 
 
@@ -33,17 +34,17 @@ class wallDistance:
         #Saturation function, if the desired speed is too great, set to max speed
         #IPS speeds in .csv file has been changed to have a +/- value
         #min/max function (in servos) will have to be changed to find the largest +/- value
-        if velSig > abs(self.maxSpeed):
-            return self.maxSpeed
-        elif velSig < abs(self.minSpeed):
-            return self.minSpeed
+        if velSig > abs(self.maxRight) or velSig >abs(self.maxLeft):
+            return max(self.maxRight,self.maxLeft)
+        elif velSig < abs(self.minLeft) or velSig < abs(self.minRight):
+            return min(self.minLeft,self.minRight)
         else:
             return velSig
 
     def towardsWall(self,desired_dist,p):
         while True:
             print("Walking towards Wall")
-            self.pControl(desired_dist,p,self.fSensor.getDistance())
+            self.pControl(desired_dist,p,self.forwardSensor())
             time.sleep(1) #might need to be half second or faster...
 
 
@@ -63,9 +64,9 @@ class wallDistance:
         elif int(inputOption) == 2:
             self.csvReader()
         elif int(inputOption) == 3:
-            print("Please provide 𝑑𝑒𝑠𝑖𝑟𝑒𝑑 𝑑𝑖𝑠𝑡𝑎𝑛𝑐𝑒 𝑡𝑜 𝑡ℎ𝑒 𝑔𝑜𝑎𝑙: ", end="")
+            print("Please provide desired distance of the goal: ", end="")
             desired_dist = input()
-            print("Please provide 𝑝𝑟𝑜𝑝𝑜𝑟𝑡𝑖𝑜𝑛𝑎𝑙 𝑔𝑎𝑖𝑛 𝑜𝑟 𝑐𝑜𝑟𝑟𝑒𝑐𝑡𝑖𝑜𝑛 𝑒𝑟𝑟𝑜𝑟 𝑔𝑎𝑖𝑛: ", end="")
+            print("Please provide proportional gain or correction error gain: ", end="")
             p = input()
             self.towardsWall(desired_dist,p)
 
