@@ -386,6 +386,11 @@ class servos:
             self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(1.5) / 20 * 4096))
             self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(1.5) / 20 * 4096))
             
+    def runRobot(self,left,right):
+            self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(left) / 20 * 4096))
+            self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(right) / 20 * 4096))
+            
                 
 p1=servos()
 #p1.main_execute()
+p1.runRobot(1.7,1.5);# left less than 1.5--going backwards

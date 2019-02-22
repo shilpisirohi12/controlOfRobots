@@ -405,7 +405,7 @@ class servos:
         return (pwmL,pwmR)
     
     def csvGenerator(self):
-        with open('/home/pi/assignments/git/controlOfRobots/Lab2/calibrations.csv', 'w', newline='') as csvfile:
+        with open('/home/pi/assignments/git/controlOfRobots/Lab2/test_calibrations.csv', 'w', newline='') as csvfile:
             fieldnames = ['PWM', 'RPS_Left', 'RPS_Right']
             csvWriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
             csvWriter.writeheader()
@@ -417,7 +417,7 @@ class servos:
         arrLeft=[]
         arrSpeedLeft=[]
         arrSpeedRight=[]
-        with open('/home/pi/assignments/git/controlOfRobots/calibrations.csv', mode='r') as csvfile:
+        with open('/home/pi/assignments/git/controlOfRobots/Lab2/test_calibrations.csv', mode='r') as csvfile:
             csvReader=csv.DictReader(csvfile)
             for row in csvReader:
                 arrLeft.append(row["PWM"])

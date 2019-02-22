@@ -16,24 +16,19 @@ class wallDistance(tof, servos):
         # P controller function
         self.e_t = float(r_t) - (float(self.y_t) / 25.4)
         self.u_t = float(k_p) * self.e_t
-        self.u_rt = self.fSat(self.u_t)
+        rpsLeft=round((float(self.u_t))/(float(self.cf)),2)
+        print("self.e_t: ", self.e_t, " self.u_t: ", self.u_t," rpsLeft: ",rpsLeft," k_p: ",k_p," r_t: ",r_t)
+        #self.u_rt = self.fSat(self.u_t)
         if self.e_t == 0:
             self.stopRobot()
             # might need a small range since sensors aren't 100% accurate..
             # setPWM to 1.5 STOP condition at expected distance
             # stay w/in infinite loop to check if robot is move
         else:
-            speeds = self.getSpeedsIPS(self.u_rt, self.u_rt)
+            speeds = self.lin_interpolate(rpsLeft,rpsLeft,self.wheel_calibration)
             lSpd = self.fSat(speeds[0])
-            rSpd = self.fSat(speeds[1])
-             #setting the speed on the Servos
-            self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(lSpd)/ 20 * 4096))
-            self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(rSpd)-0.003)/ 20 * 4096))
+            print("lSpd:  ",lSpd)
 
-            
-            self.setSpeedsIPS(self.u_rt, float(self.u_rt)+float(0.2));
-
-        print("pControl--->\n self.e_t: ", self.e_t, " self.u_t:", self.u_t, " self.u_rt:", self.u_rt," self.y_t:",self.y_t)
 
     def fSat(self, velSig):
         # Saturation function, if the desired speed is too great, set to max speed
@@ -51,16 +46,18 @@ class wallDistance(tof, servos):
 
     def towardsWall(self, desired_dist, p):
         self.csvReader()
-
         while True:
-            print("Walking towards Wall")
+            print("Walking towards Wall---",self.forwardSensor())
             self.y_t = self.forwardSensor()
+            print("y_t: ",self.y_t,"  float(self.y_t)/25.4:",float(self.y_t)/25.4);
             if float(self.y_t)/25.4 >45:
                 print("******WARNING: EXCEEDING THE SENSOR's RANGE********")
-            print("y_t: ",self.y_t,"  float(self.y_t)/25.4:",float(self.y_t)/25.4);
-            if self.y_t == desired_dist:
+
+            if round(float(self.y_t),0) == round(float(desired_dist),0):
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inside if of towardsWall>>>>>>>>>>>>>>")
                 self.stopRobot()
             else:
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inside else of towardsWall>>>>>>>>>>>>>>")
                 self.pControl(desired_dist, p)
             time.sleep(self.sleep_interval)  # might need to be half second or faster...
 
