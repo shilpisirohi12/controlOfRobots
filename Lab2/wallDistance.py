@@ -12,7 +12,7 @@ class wallDistance(tof,servos):
 
     def pControl(self,y_t,k_p,r_t):
         #P controller function
-        self.e_t = float(r_t) - float(y_t)
+        self.e_t = float(r_t) - (float(y_t)/25.4)
         self.u_t = float(k_p) * self.e_t
         self.u_rt = self.fSat(self.u_t)
         if self.e_t == 0:
@@ -27,6 +27,10 @@ class wallDistance(tof,servos):
 
             # setting the speed on the Servos
             self.setSpeedsIPS(lSpd,rSpd);
+            
+            
+        print("pControl--->\n self.e_t: ",self.e_t," self.u_t:",self.u_t," self.u_rt:",self.u_rt)            
+            
 
 
 
@@ -34,14 +38,15 @@ class wallDistance(tof,servos):
         #Saturation function, if the desired speed is too great, set to max speed
         #IPS speeds in .csv file has been changed to have a +/- value
         #min/max function (in servos) will have to be changed to find the largest +/- value
-        if velSig > abs(self.maxRight) or velSig >abs(self.maxLeft):
+        if float(velSig )> abs(float(self.maxRight)) or float(velSig )>abs(float(self.maxLeft)):
             return max(self.maxRight,self.maxLeft)
-        elif velSig < abs(self.minLeft) or velSig < abs(self.minRight):
+        elif float(velSig ) < abs(float(self.minLeft)) or float(velSig ) < abs(float(self.minRight)):
             return min(self.minLeft,self.minRight)
         else:
-            return velSig
+            return float(velSig )
 
     def towardsWall(self,desired_dist,p):
+        self.csvReader()
         while True:
             print("Walking towards Wall")
             self.pControl(desired_dist,p,self.forwardSensor())
@@ -54,17 +59,14 @@ class wallDistance(tof,servos):
         print("*****MENU****")
         print("Choose Below Options to Execute the Function")
         print("Run Calibrations  ----> 1")
-        print("Load Calibrations  ----> 2")
-        print("Run Wall Distance Program ----> 3")
+        print("Run Wall Distance Program ----> 2")
         print("Enter your choice: ",end="")
         inputOption=input()
 
         if int(inputOption) == 1:
             self.calibrateSpeed()
         elif int(inputOption) == 2:
-            self.csvReader()
-        elif int(inputOption) == 3:
-            print("Please provide desired distance of the goal: ", end="")
+            print("Please provide desired distance(in inches) of the goal: ", end="")
             desired_dist = input()
             print("Please provide proportional gain or correction error gain: ", end="")
             p = input()

@@ -101,9 +101,9 @@ class servos:
 
     # To return the left and right tick counts since the last call of reset or since the start of the program
     def getCounts(self):
-        print('Inside getCounts---->')
+        #print('Inside getCounts---->')
         res = (self.lTick,self.rTick)
-        print("Counts: ",res)
+        #print("Counts: ",res)
         return res
  
  
@@ -213,7 +213,7 @@ class servos:
         self.minRight = 0
         
     def setSpeedsRPS(self, rpsLeft, rpsRight):
-        print("inside setSpeedsRPS",rpsLeft," ",rpsRight)
+        #print("inside setSpeedsRPS",rpsLeft," ",rpsRight)
         
         #if  rpsLeft < float(self.minLeft) or rpsRight < float(self.minRight):
         #    print("This speed requested is too low to produce accurate results. Please try again")
@@ -232,8 +232,8 @@ class servos:
                    
     def setSpeedsIPS(self,ipsLeft, ipsRight):
         print("inside setSpeedsIPS",ipsLeft," ",ipsRight)
-        rpsLeft=round((ipsLeft)/(float(self.cf)),2)
-        rpsRight=round((ipsRight)/(float(self.cf)),2)        
+        rpsLeft=round((float(ipsLeft))/(float(self.cf)),2)
+        rpsRight=round((float(ipsRight))/(float(self.cf)),2)        
         #print("avg speed: ",avg_speed)
         #if  rpsLeft < float(self.minLeft) or rpsRight < float(self.minRight):
         #    print("This speed is too low to produce accurate results. Please try again")
@@ -267,9 +267,9 @@ class servos:
         return v
     
     def getSpeedsIPS(self,ipsLeft, ipsRight):
-        print("inside setSpeedsIPS",ipsLeft," ",ipsRight)
-        rpsLeft=round((ipsLeft)/(float(self.cf)),2)
-        rpsRight=round((ipsRight)/(float(self.cf)),2)
+        #print("inside setSpeedsIPS",ipsLeft," ",ipsRight)
+        rpsLeft=round((float(ipsLeft))/(float(self.cf)),2)
+        rpsRight=round((float(ipsRight))/(float(self.cf)),2)
         
         #check for errors, if found return zeros to be caught by calling function
         #if rpsLeft < float(self.minLeft) or rpsRight < float(self.minRight):
@@ -379,7 +379,7 @@ class servos:
             count = count + 1
                 
         if pwmL == 0 and (maxL - minL)!=0:
-            print("interpolate:", pwm_minL, pwm_maxL, minL, maxL, spdL)
+            #print("interpolate:", pwm_minL, pwm_maxL, minL, maxL, spdL)
             pwmL = (((pwm_minL*(maxL - spdL)) + (pwm_maxL*(spdL - minL))) / (maxL - minL))
             
         count = 0   
@@ -399,7 +399,7 @@ class servos:
             count = count + 1
                 
         if pwmR == 0 and (maxL - minL)!=0:
-            print("Interpolate: ", pwm_minR, pwm_maxR, minR, maxR, spdR)
+            #print("Interpolate: ", pwm_minR, pwm_maxR, minR, maxR, spdR)
             pwmR = (pwm_minR*(maxR - spdR) + pwm_maxR*(spdR - minR)) / (maxR - minR)
                     
         return (pwmL,pwmR)
@@ -413,11 +413,11 @@ class servos:
                 csvWriter.writerow({'PWM':x,'RPS_Left':y,'RPS_Right':z})
 
     def csvReader(self):
-        print("inside csvReader")
+        #print("inside csvReader")
         arrLeft=[]
         arrSpeedLeft=[]
         arrSpeedRight=[]
-        with open('/home/pi/assignments/assignment1/calibrations.csv', mode='r') as csvfile:
+        with open('/home/pi/assignments/git/controlOfRobots/calibrations.csv', mode='r') as csvfile:
             csvReader=csv.DictReader(csvfile)
             for row in csvReader:
                 arrLeft.append(row["PWM"])
