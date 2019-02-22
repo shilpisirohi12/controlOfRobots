@@ -417,7 +417,7 @@ class servos:
         arrLeft=[]
         arrSpeedLeft=[]
         arrSpeedRight=[]
-        with open('/home/pi/assignments/git/controlOfRobots/Lab2/test_calibrations.csv', mode='r') as csvfile:
+        with open('/home/pi/assignments/git/controlOfRobots/Lab2/calibrations.csv', mode='r') as csvfile:
             csvReader=csv.DictReader(csvfile)
             for row in csvReader:
                 arrLeft.append(row["PWM"])
