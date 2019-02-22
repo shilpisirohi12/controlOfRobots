@@ -58,11 +58,11 @@ class wallDistance:
         print("Enter your choice: ",end="")
         inputOption=input()
 
-        if inputOption==1:
+        if int(inputOption) == 1:
             self.calibrateSpeed()
-        if inputOption==2:
+        elif int(inputOption) == 2:
             self.csvReader()
-        if inputOption==3:
+        elif int(inputOption) == 3:
             print("Please provide 𝑑𝑒𝑠𝑖𝑟𝑒𝑑 𝑑𝑖𝑠𝑡𝑎𝑛𝑐𝑒 𝑡𝑜 𝑡ℎ𝑒 𝑔𝑜𝑎𝑙: ", end="")
             desired_dist = input()
             print("Please provide 𝑝𝑟𝑜𝑝𝑜𝑟𝑡𝑖𝑜𝑛𝑎𝑙 𝑔𝑎𝑖𝑛 𝑜𝑟 𝑐𝑜𝑟𝑟𝑒𝑐𝑡𝑖𝑜𝑛 𝑒𝑟𝑟𝑜𝑟 𝑔𝑎𝑖𝑛: ", end="")
