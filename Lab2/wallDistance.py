@@ -3,6 +3,7 @@
 from tof import tof
 from servos import servos
 import time
+import math
 
 
 class wallDistance(tof, servos):
@@ -25,28 +26,38 @@ class wallDistance(tof, servos):
             speeds = self.getSpeedsIPS(self.u_rt, self.u_rt)
             lSpd = self.fSat(speeds[0])
             rSpd = self.fSat(speeds[1])
-            self.y_t = ((lSpd + rSpd) * self.sleep_interval) / 2
-            # setting the speed on the Servos
-            self.setSpeedsIPS(lSpd, rSpd);
+             #setting the speed on the Servos
+            self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(lSpd)/ 20 * 4096))
+            self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(rSpd)-0.003)/ 20 * 4096))
 
-        print("pControl--->\n self.e_t: ", self.e_t, " self.u_t:", self.u_t, " self.u_rt:", self.u_rt)
+            
+            self.setSpeedsIPS(self.u_rt, float(self.u_rt)+float(0.2));
+
+        print("pControl--->\n self.e_t: ", self.e_t, " self.u_t:", self.u_t, " self.u_rt:", self.u_rt," self.y_t:",self.y_t)
 
     def fSat(self, velSig):
         # Saturation function, if the desired speed is too great, set to max speed
         # IPS speeds in .csv file has been changed to have a +/- value
         # min/max function (in servos) will have to be changed to find the largest +/- value
-        if float(velSig) > abs(float(self.maxRight)) or float(velSig) > abs(float(self.maxLeft)):
+        if abs(float(velSig)) > abs(float(self.maxRight)) or abs(float(velSig)) > abs(float(self.maxLeft)):
+            print("inside max ifs ",max(self.maxRight, self.maxLeft))
             return max(self.maxRight, self.maxLeft)
-        elif float(velSig) < abs(float(self.minLeft)) or float(velSig) < abs(float(self.minRight)):
+        elif abs(float(velSig)) < abs(float(self.minLeft)) or abs(float(velSig)) < abs(float(self.minRight)):
+            print("inside min ifs ",min(self.minLeft, self.minRight))
             return min(self.minLeft, self.minRight)
         else:
+            return("float(velSig): ",float(velSig))
             return float(velSig)
 
     def towardsWall(self, desired_dist, p):
         self.csvReader()
-        self.y_t = self.forwardSensor()
+
         while True:
             print("Walking towards Wall")
+            self.y_t = self.forwardSensor()
+            if float(self.y_t)/25.4 >45:
+                print("******WARNING: EXCEEDING THE SENSOR's RANGE********")
+            print("y_t: ",self.y_t,"  float(self.y_t)/25.4:",float(self.y_t)/25.4);
             if self.y_t == desired_dist:
                 self.stopRobot()
             else:

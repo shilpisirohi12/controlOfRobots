@@ -280,7 +280,7 @@ class servos:
         #    print("this speed is too High. Please try again")
         #    return (0, 0)
         #else:
-        value = self.lin_interpolate(rpsLeft,rpsRight,self.wheel_calibration)
+        value = self.interpolate(rpsLeft,rpsRight,self.wheel_calibration)
             
         print("Value Interpolated: ",float(value[0]), float(value[1]))
         return value
@@ -405,7 +405,7 @@ class servos:
         return (pwmL,pwmR)
     
     def csvGenerator(self):
-        with open('/home/pi/assignments/assignment1/calibrations.csv', 'w', newline='') as csvfile:
+        with open('/home/pi/assignments/git/controlOfRobots/Lab2/calibrations.csv', 'w', newline='') as csvfile:
             fieldnames = ['PWM', 'RPS_Left', 'RPS_Right']
             csvWriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
             csvWriter.writeheader()
