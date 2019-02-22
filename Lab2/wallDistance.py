@@ -2,42 +2,54 @@
 from servos import servos
 from tof import tof
 include time
-include servos
-#inlcude tof
+from servos import servos
+from tof import tof
 
-def pControl:
-	#P controller function
-	e_t = u_t = y_t = u_rt = 0
-	r_t = 5
-	k_p = 0.6 #change based on test variable
-	
-	#this loop should run infinitely.. should move back to 5in from wall without having
-	#to restart if the robot is moved
-	while true:
-		y_t = fSensor.getDistance()
-		#convert to inches (given in mm) or convert r_t to mm
+class wallDistance:
+	def __init__(self):
+		super().__init__()
+		e_t = u_t = y_t = u_rt = 0
+		k_p = 0.6 #change based on test variable
+
+	def pControl(self,y_t,k_p,r_t):
+		#P controller function
 		e_t = r_t - y_t
-		
-		if e_t == 0: #might need a small range since sensors aren't 100% accurate..
-			#setPWM to 1.5 STOP condition at expected distance
-			#stay w/in infinite loop to check if robot is moved
 		u_t = k_p * e_t
-		u_rt = fSat(u_t)
-		
-		getSpeedIPS(u_rt, u_rt)
-		
-		#setPWM using return vals from getSpeed
-	
-		time.sleep(1) #might need to be half second or faster...
-		
-def fSat(velSig):
-	#Saturation function, if the desired speed is too great, set to max speed
+		u_rt = self.fSat(u_t)
+		if e_t == 0:
+			self.stopRobot()
+			#might need a small range since sensors aren't 100% accurate..
+			#setPWM to 1.5 STOP condition at expected distance
+			#stay w/in infinite loop to check if robot is move
+		else:
+			self.setSpeedIPS(u_rt, u_rt)# setting the speed on the Servos
+			time.sleep(1) #might need to be half second or faster...
 
-	#IPS speeds in .csv file has been changed to have a +/- value
-	#min/max function (in servos) will have to be changed to find the largest +/- value
-	if velSig > maxSpeed:
-		return velSig = maxSpeed
-	elif velSig < minSpeed:
-		return velSig = minSpeed
-	else:
-		return velSig
+	def fSat(self,velSig):
+		#Saturation function, if the desired speed is too great, set to max speed
+		#IPS speeds in .csv file has been changed to have a +/- value
+		#min/max function (in servos) will have to be changed to find the largest +/- value
+		if velSig > self.maxSpeed:
+			return self.maxSpeed
+		elif velSig < self.minSpeed:
+			return self.minSpeed
+		else:
+			return velSig
+
+	def towardsWall(self,desired_dist,p):
+		while True:
+			print("Walking towards Wall")
+			self.pControl(desired_dist,p,self.fSensor.getDistance())
+
+
+
+	def executeWallDist(self):
+		print("Please provide 𝑑𝑒𝑠𝑖𝑟𝑒𝑑 𝑑𝑖𝑠𝑡𝑎𝑛𝑐𝑒 𝑡𝑜 𝑡ℎ𝑒 𝑔𝑜𝑎𝑙: ", end="")
+		desired_dist = input()
+		print("Please provide 𝑝𝑟𝑜𝑝𝑜𝑟𝑡𝑖𝑜𝑛𝑎𝑙 𝑔𝑎𝑖𝑛 𝑜𝑟 𝑐𝑜𝑟𝑟𝑒𝑐𝑡𝑖𝑜𝑛 𝑒𝑟𝑟𝑜𝑟 𝑔𝑎𝑖𝑛: ", end="")
+		p = input()
+		self.towardsWall(desired_dist,p)
+
+
+
+
