@@ -80,6 +80,10 @@ class servos:
         # Stop the servos
         self.pwm.set_pwm(self.LSERVO, 0, 0);
         self.pwm.set_pwm(self.RSERVO, 0, 0);
+        # Stop measurement for all sensors
+        self.lSensor.stop_ranging()
+        self.fSensor.stop_ranging()
+        self.rSensor.stop_ranging()        
         
         # Cleanup GPIO
         GPIO.cleanup()
@@ -294,7 +298,63 @@ class servos:
         
         v = self.getSpeedsIPS(ips_L, ips_R)
         return v
-
+    
+    def interpolate(self, rpsL, rpsR, data_lst):
+        given_speedLeft = abs(float(rpsL))
+        given_speedRight = abs(float(rpsR))
+        count = 0
+        nearest_value = 0
+        left_spd=0
+        right_spd=0
+        for x, y, z in data_lst:
+            if count == 0:
+                distanceL = abs(float(given_speedLeft) - float(y))
+                nearest_valueL = float(y)
+                left_spd=float(x)
+                #right_spd=float(y)
+            if count > 0 and distanceL > abs(float(given_speedLeft) - float(y)):
+                distanceL = abs(float(given_speedLeft) - float(y))
+                nearest_valueL = float(y)
+                left_spd=float(x)             
+            #print("z: ", z, "  nearest: ", nearest_valueL, "left_spd: ",left_spd,"  dist: ", distanceL)
+            count = count + 1
+            
+        pwmDistL = abs(1.5 - left_spd)   
+        if rpsL < 0:
+            left_spd = 1.5 - pwmDistL
+                    
+        else:
+            left_spd = 1.5 + pwmDistL
+        
+        count = 0
+        #print("left_spd: ",left_spd)   
+        for x, y, z in data_lst:
+            #if float(x)==float(left_spd):
+                #print("inside 1st if")
+                if count==0:
+                    #print("inside count==0")
+                    distanceR = abs(float(given_speedRight) - float(z))
+                    nearest_valueR = float(z)
+                    right_spd=float(x)
+                else:
+                    if distanceR > abs(float(given_speedRight) - float(z)):
+                        distanceR = abs(float(given_speedRight) - float(z))
+                        nearest_valueR = float(z)
+                        right_spd=float(x)
+                count=count+1
+        pwmDistR = abs(1.5 - right_spd)
+        if rpsR > 0:
+            right_spd = 1.5 - pwmDistR
+        else:
+            right_spd = 1.5 + pwmDistR
+            
+        for x, y, z in data_lst:
+                if left_spd == float(x):
+                    nearest_valueL = float(y)
+                if right_spd == float(x):
+                    nearest_valueR = float(z)
+                    
+        return (left_spd,right_spd,nearest_valueL,nearest_valueR,rpsL,rpsR)
     
     def lin_interpolate(self, rpsL, rpsR, data_lst):
         
@@ -318,7 +378,7 @@ class servos:
                 pwmL = float(x)
             count = count + 1
                 
-        if pwmL == 0:
+        if pwmL == 0 and (maxL - minL)!=0:
             print("interpolate:", pwm_minL, pwm_maxL, minL, maxL, spdL)
             pwmL = (((pwm_minL*(maxL - spdL)) + (pwm_maxL*(spdL - minL))) / (maxL - minL))
             
@@ -338,7 +398,7 @@ class servos:
                 pwmR = float(x)
             count = count + 1
                 
-        if pwmR == 0:
+        if pwmR == 0 and (maxL - minL)!=0:
             print("Interpolate: ", pwm_minR, pwm_maxR, minR, maxR, spdR)
             pwmR = (pwm_minR*(maxR - spdR) + pwm_maxR*(spdR - minR)) / (maxR - minR)
                     
