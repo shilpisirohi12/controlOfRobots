@@ -69,6 +69,7 @@ class wallDistance:
             p = input()
             self.towardsWall(desired_dist,p)
 
-
+obj=wallDistance()
+obj.executeWallDist()
 
 
