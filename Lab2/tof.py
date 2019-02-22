@@ -4,14 +4,15 @@
 
 import time
 import sys
-
+from servos import servos
 sys.path.append('/home/pi/VL53L0X_rasp_python/python')
 import VL53L0X
 import RPi.GPIO as GPIO
 
 
-class tof:
+class tof(servos):
     def __init__(self):
+        super().__init__()
         print("inside init")
         print("Pins that the sensors are connected to")
         LSHDN = 27
@@ -42,7 +43,11 @@ class tof:
         self.fSensor = VL53L0X.VL53L0X(address=DEFAULTADDR)
         self.rSensor = VL53L0X.VL53L0X(address=RADDR)
         #print("lSensor:" ,self.lSensor )
-
+        
+        #to increase the timing budget to a more accurate but slower 200ms value
+        self.lSensor.measurement_timing_budget=200000
+        self.fSensor.measurement_timing_budget=200000
+        self.rSensor.measurement_timing_budget=200000
         print("Connect the left sensor and start measurement")
         GPIO.output(LSHDN, GPIO.HIGH)
         time.sleep(0.01)
@@ -57,6 +62,16 @@ class tof:
         GPIO.output(FSHDN, GPIO.HIGH)
         time.sleep(0.01)
         self.fSensor.start_ranging(VL53L0X.VL53L0X_GOOD_ACCURACY_MODE)
+        
+        
+    def leftDistance(self):
+        return self.lSensor.get_distance()
+    
+    def rightDistance(self):
+        return self.rSensor.get_distance()
+    
+    def forwardSensor(self):
+        return self.fSensor.get_distance()
 
     def start(self):
         for count in range(1, 100):
@@ -74,4 +89,4 @@ class tof:
         self.rSensor.stop_ranging()
 
 p1 = tof()
-p1.start()
+#p1.start()
