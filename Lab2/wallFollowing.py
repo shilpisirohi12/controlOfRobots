@@ -100,10 +100,16 @@ class wallFollow(tof, servos):
             print("inside if----------------------------------->",abs(round(float(self.e_t),0)))
             if float(self.followFlag) ==1:
                 time.sleep(0.02)
-                self.leftTurn(r_t, k_p)
+                if float(self.rSensorDist) < ((float(r_t) / 25.4) + 1) and float(self.rSensorDist) > ((float(r_t) / 25.4) - 1):
+                    self.leftTurn(r_t, k_p)
+                else:
+                    self.rightTurn(r_t,k_p)
             if float(self.followFlag) ==0:
-                time.sleep(0.02)                
-                self.rightTurn(r_t, k_p)
+                time.sleep(0.02)
+                if float(self.lSensorDist)<((float(r_t)/25.4)+1) and float(self.lSensorDist)>((float(r_t)/25.4)-1):
+                    self.rightTurn(r_t, k_p)
+                else:
+                    self.leftTurn(r_t,k_p)
         else:
             #print("inside else----------------------------------->")
             if self.isMax==1:
