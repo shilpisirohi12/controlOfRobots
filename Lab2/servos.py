@@ -230,19 +230,10 @@ class servos:
         self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(value[0]) / 20 * 4096))
         self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(value[1]) / 20 * 4096))
                    
-    def setSpeedsIPS(self,ipsLeft, ipsRight):
+    def setSpeedsIPS(self,ipsLeft, ipsRight,flag):
         print("inside setSpeedsIPS",ipsLeft," ",ipsRight)
         rpsLeft=round((float(ipsLeft))/(float(self.cf)),2)
-        rpsRight=round((float(ipsRight))/(float(self.cf)),2)        
-        #print("avg speed: ",avg_speed)
-        #if  rpsLeft < float(self.minLeft) or rpsRight < float(self.minRight):
-        #    print("This speed is too low to produce accurate results. Please try again")
-        #    return
-        
-        #if rpsLeft > float(self.maxLeft) or rpsRight > float(self.maxRight):
-        #    print("this speed is too High. Please try again")
-        #    return
-        #else:
+        rpsRight=round((float(ipsRight))/(float(self.cf)),2)
         value = self.lin_interpolate(rpsLeft,rpsRight,self.wheel_calibration)
                 
         print("Value Interpolated: ",float(value[0]), float(value[1]))

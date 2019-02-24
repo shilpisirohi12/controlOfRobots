@@ -21,7 +21,6 @@ class wallFollow(tof, servos):
     
     def moveForward(self, r_t, k_p,y_t):
         print("move Forward")
-        
         self.pControl(r_t, k_p,y_t)
         
     def rightTurn(self,r_t, k_p):
@@ -99,31 +98,26 @@ class wallFollow(tof, servos):
         #self.u_rt = self.fSat(self.u_t)
         if abs(round(float(self.e_t),0))== 0 or abs(round(float(self.e_t),0)) == 1 or abs(round(float(self.e_t),0)) == 2:
             print("inside if----------------------------------->",abs(round(float(self.e_t),0)))
-            #self.stopRobot()
             if float(self.followFlag) ==1:
                 time.sleep(0.02)
                 self.leftTurn(r_t, k_p)
             if float(self.followFlag) ==0:
                 time.sleep(0.02)                
                 self.rightTurn(r_t, k_p)
-                
         else:
             #print("inside else----------------------------------->")
             if self.isMax==1:
                 self.lpwm=1.6
                 self.rpwm=1.4
-
             else:        
                 speeds = self.lin_interpolate(abs(float(self.u_rt)),abs(float(self.u_rt)),self.wheel_calibration)
                 print("Value Interpolated: ",float(speeds[0]), float(speeds[1]))
                 if (float(speeds[0])>float(speeds[1])):
                     self.lpwm=float(speeds[0])+0.1
                     self.rpwm=float(speeds[1])-0.1
-
                 else:
                     self.lpwm=float(speeds[1])+0.1
                     self.rpwm=float(speeds[0])-0.1
-
                     #print("else----->flag: ",self.flag," lpwm: ",lpwm," rpwm: ",rpwm)
             print("self.isMax: ",self.isMax," self.lpwm: ",self.lpwm," rself.pwm: ",self.rpwm)   
             self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(self.lpwm)/ 20 * 4096))
@@ -146,11 +140,11 @@ class wallFollow(tof, servos):
             self.lSensorDist=self.leftDistance()
             self.rSensorDist=self.rightDistance()
             self.fSensorDist=self.forwardSensor()
-            time.sleep(0.02)
+            time.sleep(0.01)
             if self.lSensorDist<self.rSensorDist:
                 print("following wall wrt to leftSensor")
                 self.followFlag=0
-                if float(self.lSensorDist)<(float(r_t)+1) and float(self.lSensorDist)>(float(r_t)-1):
+                if float(self.lSensorDist)<((float(r_t)/25.4)+1) and float(self.lSensorDist)>((float(r_t)/25.4)-1):
                     print("@@@@@@@@@@@@@@@@@@@@@@@@@IFS@@@@@@@@@@@@@@@@@@@@@@")
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
@@ -159,27 +153,26 @@ class wallFollow(tof, servos):
             else:
                 print("following wall wrt to rightSensor")
                 self.followFlag=1
-                if float(self.rSensorDist)<(float(r_t)+1) and float(self.rSensorDist)>(float(r_t)-1):
+                if float(self.rSensorDist)<((float(r_t)/25.4)+1) and float(self.rSensorDist)>((float(r_t)/25.4)-1):
+                    print("@@@@@@@@@@@@@@@@@@@@@@@@@IFS@@@@@@@@@@@@@@@@@@@@@@")
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
                     print("**********************Right Sensor do corrections***************")
-                    self.sidepControl(r_t,k_p,self.rSensorDist)            
-
-
+                    self.sidepControl(r_t,k_p,self.rSensorDist)
 
     def executeWallFollow(self):
         inputOption = 0
         print("*****MENU****")
         print("Choose Below Options to Execute the Function")
         print("Run Calibrations  ----> 1")
-        print("Run Wall DFollow Program ----> 2")
+        print("Run Wall Follow Program ----> 2")
         print("Enter your choice: ", end="")
         inputOption = input()
 
         if int(inputOption) == 1:
             self.calibrateSpeed()
         elif int(inputOption) == 2:
-            print("Please provide desired distance(in inches) of the goal: ", end="")
+            print("Please provide desired distance(in inches) from th wall: ", end="")
             desired_dist = input()
             print("Please provide proportional gain or correction error gain: ", end="")
             p = input()
@@ -188,5 +181,4 @@ class wallFollow(tof, servos):
 
 obj = wallFollow()
 obj.executeWallFollow()            
-	
-	
+
