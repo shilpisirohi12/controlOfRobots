@@ -99,19 +99,19 @@ class wallFollow(tof, servos):
         if abs(round(float(self.e_t),0))== 0 or abs(round(float(self.e_t),0)) == 1 or abs(round(float(self.e_t),0)) == 2:
             print("inside if----------------------------------->",abs(round(float(self.e_t),0)))
             if float(self.followFlag) ==1:
-                time.sleep(0.02)
+               # time.sleep(0.02)
                 if float(self.rSensorDist) < ((float(r_t) / 25.4) + 1) and float(self.rSensorDist) > ((float(r_t) / 25.4) - 1):
                     self.leftTurn(r_t, k_p)
                 else:
                     self.rightTurn(r_t,k_p)
             if float(self.followFlag) ==0:
-                time.sleep(0.02)
+                #time.sleep(0.02)
                 if float(self.lSensorDist)<((float(r_t)/25.4)+1) and float(self.lSensorDist)>((float(r_t)/25.4)-1):
                     self.rightTurn(r_t, k_p)
                 else:
                     self.leftTurn(r_t,k_p)
         else:
-            #print("inside else----------------------------------->")
+            print("inside else----------------------------------->")
             if self.isMax==1:
                 self.lpwm=1.6
                 self.rpwm=1.4
@@ -146,7 +146,7 @@ class wallFollow(tof, servos):
             self.lSensorDist=self.leftDistance()
             self.rSensorDist=self.rightDistance()
             self.fSensorDist=self.forwardSensor()
-            time.sleep(0.01)
+            #time.sleep(0.01)
             if self.lSensorDist<self.rSensorDist:
                 print("following wall wrt to leftSensor")
                 self.followFlag=0
