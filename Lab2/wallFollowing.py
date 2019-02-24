@@ -99,19 +99,13 @@ class wallFollow(tof, servos):
         if abs(round(float(self.e_t),0))== 0 or abs(round(float(self.e_t),0)) == 1 or abs(round(float(self.e_t),0)) == 2:
             print("inside if----------------------------------->",abs(round(float(self.e_t),0)))
             if float(self.followFlag) ==1:
-               # time.sleep(0.02)
-                if float(self.rSensorDist) < ((float(r_t) / 25.4) + 1) and float(self.rSensorDist) > ((float(r_t) / 25.4) - 1):
-                    self.leftTurn(r_t, k_p)
-                else:
-                    self.rightTurn(r_t,k_p)
+                time.sleep(0.02)
+                self.leftTurn(r_t, k_p)
             if float(self.followFlag) ==0:
-                #time.sleep(0.02)
-                if float(self.lSensorDist)<((float(r_t)/25.4)+1) and float(self.lSensorDist)>((float(r_t)/25.4)-1):
-                    self.rightTurn(r_t, k_p)
-                else:
-                    self.leftTurn(r_t,k_p)
+                time.sleep(0.02)
+                self.rightTurn(r_t, k_p)
         else:
-            print("inside else----------------------------------->")
+            #print("inside else----------------------------------->")
             if self.isMax==1:
                 self.lpwm=1.6
                 self.rpwm=1.4
@@ -143,28 +137,34 @@ class wallFollow(tof, servos):
 
     def startWallFollow(self,r_t,k_p):        
         while True:
-            self.lSensorDist=self.leftDistance()
-            self.rSensorDist=self.rightDistance()
-            self.fSensorDist=self.forwardSensor()
-            #time.sleep(0.01)
-            if self.lSensorDist<self.rSensorDist:
+            self.lSensorDist = self.leftDistance()
+            self.rSensorDist = self.rightDistance()
+            self.fSensorDist = self.forwardSensor()
+            time.sleep(0.01)
+            if self.lSensorDist < self.rSensorDist:
                 print("following wall wrt to leftSensor")
-                self.followFlag=0
-                if float(self.lSensorDist)<((float(r_t)/25.4)+1) and float(self.lSensorDist)>((float(r_t)/25.4)-1):
+                self.followFlag = 0
+                if (((float(r_t)) + 1) > (float(self.lSensorDist) / 25.4) > (float(r_t) - 1)):
                     print("@@@@@@@@@@@@@@@@@@@@@@@@@IFS@@@@@@@@@@@@@@@@@@@@@@")
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
                     print("**********************Left Sensor do corrections***************")
                     self.sidepControl(r_t,k_p,self.lSensorDist)
-            else:
+            if self.lSensorDist > self.rSensorDist:
                 print("following wall wrt to rightSensor")
-                self.followFlag=1
-                if float(self.rSensorDist)<((float(r_t)/25.4)+1) and float(self.rSensorDist)>((float(r_t)/25.4)-1):
+                self.followFlag = 1
+                if (((float(r_t)) + 1) > (float(self.rSensorDist) / 25.4) > (float(r_t) - 1)):
                     print("@@@@@@@@@@@@@@@@@@@@@@@@@IFS@@@@@@@@@@@@@@@@@@@@@@")
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
                     print("**********************Right Sensor do corrections***************")
                     self.sidepControl(r_t,k_p,self.rSensorDist)
+            if (self.followFlag == 0) and (float(self.lSensorDist)/25.4)>(float(r_t)+1.5):
+                print("no reading available for leftsensor--> turn robot left")
+                self.leftTurn(r_t,k_p)
+            if (self.followFlag == 1) and (float(self.rSensorDist)/25.4)>(float(r_t)+1.5):
+                print("no reading available for leftsensor--> turn robot left")
+                self.leftTurn(r_t,k_p)
 
     def executeWallFollow(self):
         inputOption = 0
@@ -178,7 +178,7 @@ class wallFollow(tof, servos):
         if int(inputOption) == 1:
             self.calibrateSpeed()
         elif int(inputOption) == 2:
-            print("Please provide desired distance(in inches) from th wall: ", end="")
+            print("Please provide desired distance(in inches) from the wall: ", end="")
             desired_dist = input()
             print("Please provide proportional gain or correction error gain: ", end="")
             p = input()
