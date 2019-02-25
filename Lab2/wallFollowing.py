@@ -152,12 +152,12 @@ class wallFollow(tof, servos):
             print("inside if of pControl-------------------------------->",abs(round(float(self.e_t),0)))
             if float(self.followFlag) ==1:
                 print("<----Moving Left for right wall follow in pControl---->")
-                time.sleep(0.02)
                 self.leftTurn(r_t, k_p)
-            if float(self.followFlag) ==0:
-                print("<----Moving right for left wall follow in pControl---->")
                 time.sleep(0.02)
+            if float(self.followFlag) ==0:
+                print("<----Moving right for left wall follow in pControl---->")                
                 self.rightTurn(r_t, k_p)
+                time.sleep(0.02)
         else:
             #print("inside else----------------------------------->")
             if self.isMax==1:
@@ -193,14 +193,14 @@ class wallFollow(tof, servos):
 
         self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(1.4)/ 20 * 4096))
         self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(1.6)-0.003) / 20 * 4096))
-        time.sleep(0.1)
+        time.sleep(0.03)
         if self.followFlag == 0:
             print("inside moveBack---> turning right")
             self.rightTurn(self.r_t,self.k_p)
         if self.followFlag == 1:
             print("inside moveBack---> turning left")
             self.leftTurn(self.r_t,self.k_p)
-        time.sleep(0.1)
+        time.sleep(0.03)
             
     
     def startWallFollow(self,r_t,k_p):
@@ -213,7 +213,7 @@ class wallFollow(tof, servos):
             self.fSensorDist = self.forwardSensor()
             time.sleep(0.01)
             print("**********************************************")
-            print("if and else: ",self.ifcnt,"  ",self.elsecnt,"\n Left, right and forward: ",self.lSensorDist," ",self.rSensorDist,"  ",self.fSensorDist)
+            print("cntL and cntR: ",self.cntL,"  ",self.cntR,"\n Left, right and forward: ",self.lSensorDist," ",self.rSensorDist,"  ",self.fSensorDist)
             print("**********************************************")
             if self.cntL>3 or self.cntR>3:
                 print("!!!!!!!!!!!!!MOVE BACK BACK BACK!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -257,13 +257,13 @@ class wallFollow(tof, servos):
             if(float(self.fSensorDist)/25.4 > float(r_t)) and (float(self.rSensorDist)/25.4 >float(r_t)) and (self.followFlag < 0):
                print("inside if --------->1")
                self.moveForward(r_t,k_p,self.forwardSensor())
-               time.sleep(0.1)                 
+               time.sleep(0.5)                 
                self.moveForward(r_t,k_p,self.forwardSensor())
                
             if(float(self.fSensorDist)/25.4 > float(r_t)) and (float(self.leftDistance())/25.4 >(float(r_t)+3)) and (self.followFlag == 0):
                print("inside if --------->2  ",float(self.leftDistance())/25.4,"  ",(float(r_t)+3))
                self.moveForward(r_t,k_p,self.forwardSensor())
-               time.sleep(0.1) 
+               time.sleep(0.5) 
                self.leftTurn(r_t,k_p)
                
             if(float(self.fSensorDist)/25.4 > float(r_t)) and (self.rSensorDist/25.4 >(float(r_t)+3)) and (self.followFlag == 1):
