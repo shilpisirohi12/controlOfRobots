@@ -21,7 +21,7 @@ class wallFollow(tof, servos):
         self.lcnt=0
         self.rcnt=0
         self.lturn=False
-        self.rTurn=False
+        self.rturn=False
 
     
     def moveForward(self, r_t, k_p,y_t):
@@ -200,7 +200,7 @@ class wallFollow(tof, servos):
                     time.sleep(0.03)
                     self.leftTurn(r_t,k_p)
             if self.lcnt==4 or self.rcnt==4:
-                self.moveForward(r_t,k_p)
+                self.moveForward(r_t,k_p,self.forwardSensor())
                 time.sleep(0.02)
                 self.lturn=self.rTurn=False
                 self.lcnt=self.rCnt=0
