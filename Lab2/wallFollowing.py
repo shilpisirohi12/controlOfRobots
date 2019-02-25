@@ -190,12 +190,15 @@ class wallFollow(tof, servos):
             return float(velSig)            
 
     def moveBack(self):
+
         self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(1.4)/ 20 * 4096))
         self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(1.6)-0.003) / 20 * 4096))
         time.sleep(0.1)
         if self.followFlag == 0:
+            print("inside moveBack---> turning right")
             self.rightTurn(self.r_t,self.k_p)
         if self.followFlag == 1:
+            print("inside moveBack---> turning left")
             self.leftTurn(self.r_t,self.k_p)
         time.sleep(0.1)
             
@@ -212,7 +215,7 @@ class wallFollow(tof, servos):
             print("**********************************************")
             print("if and else: ",self.ifcnt,"  ",self.elsecnt,"\n Left, right and forward: ",self.lSensorDist," ",self.rSensorDist,"  ",self.fSensorDist)
             print("**********************************************")
-            if self.cnt>3:
+            if self.cntL>3 or self.cntR>3:
                 print("!!!!!!!!!!!!!MOVE BACK BACK BACK!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 self.moveBack()
                 #time.sleep(0.05)
