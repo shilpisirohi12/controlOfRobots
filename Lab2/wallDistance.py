@@ -30,38 +30,8 @@ class wallDistance(tof, servos):
             # stay w/in infinite loop to check if robot is move
         else:
             #print("inside else----------------------------------->")
-            if self.isMax==1:
-                if self.flag==1:
-                    lpwm=1.6
-                    rpwm=1.4
-                elif self.flag==0:
-                    lpwm=1.4
-                    rpwm=1.6
-            else:        
-                speeds = self.lin_interpolate(abs(float(self.u_rt)),abs(float(self.u_rt)),self.wheel_calibration)
-                print("Value Interpolated: ",float(speeds[0]), float(speeds[1]))
-                #lSpd = self.fSat(speeds[0])
-                #print("lSpd:  ",lSpd)
-                if (float(speeds[0])>float(speeds[1])):
-                     if self.flag==1:
-                        lpwm=float(speeds[0])+0.1
-                        rpwm=float(speeds[1])-0.1
-                     elif self.flag==0:
-                        lpwm=float(speeds[1])-0.1
-                        rpwm=float(speeds[0])+0.1
-                     #print("if----->flag: ",self.flag," lpwm: ",lpwm," rpwm: ",rpwm)
-
-                else:
-                    if self.flag==1:
-                        lpwm=float(speeds[1])+0.1
-                        rpwm=float(speeds[0])-0.1
-                    elif self.flag==0:
-                        lpwm=float(speeds[0])-0.1
-                        rpwm=float(speeds[1])+0.1
-                    #print("else----->flag: ",self.flag," lpwm: ",lpwm," rpwm: ",rpwm)
-            print("self.isMax: ",self.isMax," flag: ",self.flag," lpwm: ",lpwm," rpwm: ",rpwm)   
-            self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(lpwm)/ 20 * 4096))
-            self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(rpwm)-0.003) / 20 * 4096))                
+            self.setSpeedsIPS(self.u_t,self.u_t,self.isMax,self.flag)
+         
                 
             
             
