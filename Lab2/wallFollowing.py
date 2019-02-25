@@ -21,6 +21,7 @@ class wallFollow(tof, servos):
     
     def moveForward(self, r_t, k_p,y_t):
         print("move Forward")
+        #time.sleep(0.02)
         self.pControl(r_t, k_p,y_t)
         
     def rightTurn(self,r_t, k_p):
@@ -30,7 +31,7 @@ class wallFollow(tof, servos):
             self.rpwm=1.6
             self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(self.lpwm)/ 20 * 4096))
             self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(self.rpwm)-0.003) / 20 * 4096))
-            time.sleep(self.sleep_interval)
+            time.sleep(0.02)
         self.fSensorDist=self.forwardSensor()
         
     def leftTurn(self,r_t, k_p):
@@ -40,7 +41,7 @@ class wallFollow(tof, servos):
             self.rpwm=1.4
             self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(self.lpwm)/ 20 * 4096))
             self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(self.rpwm)-0.003) / 20 * 4096))
-            time.sleep(self.sleep_interval)
+            time.sleep(0.02)
         self.fSensorDist=self.forwardSensor()        
     
     def sidepControl(self,r_t,k_p,y_t):
@@ -57,14 +58,14 @@ class wallFollow(tof, servos):
             print("inside else----------------------------------->",self.followFlag)
             if self.isMax==1:
                 if  self.followFlag==0:
-                    self.lpwm=1.35
+                    self.lpwm=1.3
                     self.rpwm=1.4
                 if  self.followFlag==1:
-                    self.lpwm=1.45
+                    self.lpwm=1.4
                     self.rpwm=1.3                    
             else:        
                 speeds = self.lin_interpolate(abs(float(self.u_rt)),abs(float(self.u_rt)),self.wheel_calibration)
-                print("Value Interpolated: ",float(speeds[0]), float(speeds[1]))
+                print("Value Interpolated for sidepControl: ",float(speeds[0]), float(speeds[1]))
                 if (float(speeds[0])>float(speeds[1])):
                     if  self.followFlag==0:
                         self.lpwm=float(speeds[0])+self.threshold
@@ -135,7 +136,8 @@ class wallFollow(tof, servos):
             self.isMax=0
             return float(velSig)            
 
-    def startWallFollow(self,r_t,k_p):        
+    def startWallFollow(self,r_t,k_p):
+        currTime=time.monotonic()
         while True:
             self.lSensorDist = self.leftDistance()
             self.rSensorDist = self.rightDistance()
@@ -159,12 +161,19 @@ class wallFollow(tof, servos):
                 else:
                     print("**********************Right Sensor do corrections***************")
                     self.sidepControl(r_t,k_p,self.rSensorDist)
-            if (self.followFlag == 0) and (float(self.lSensorDist)/25.4)>(float(r_t)+1.5):
-                print("no reading available for leftsensor--> turn robot left")
-                self.leftTurn(r_t,k_p)
-            if (self.followFlag == 1) and (float(self.rSensorDist)/25.4)>(float(r_t)+1.5):
-                print("no reading available for leftsensor--> turn robot left")
-                self.leftTurn(r_t,k_p)
+            #if (self.followFlag == 1 and ((float(self.rSensorDist) / 25.4) > (float(r_t) +2.5))) or (self.followFlag == 0 and ((float(self.lSensorDist) / 25.4) > (float(r_t) +2.5))):
+                #time.sleep(0.01)
+            if (float(time.monotonic())-float(currTime))>500:
+                time.sleep(0.02)
+                if (self.followFlag == 0) and (float(self.leftDistance())/25.4)>(float(r_t)+5):
+                    print("no reading available for leftsensor--> turn robot left")
+                    time.sleep(0.03)
+                    self.leftTurn(r_t,k_p)
+                if (self.followFlag == 1) and (float(self.rightDistance())/25.4)>(float(r_t)+5):
+                    print("no reading available for rightsensor--> turn robot left")
+                    time.sleep(0.03)
+                    self.leftTurn(r_t,k_p)                
+
 
     def executeWallFollow(self):
         inputOption = 0
