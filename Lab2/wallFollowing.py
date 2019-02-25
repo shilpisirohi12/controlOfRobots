@@ -199,12 +199,17 @@ class wallFollow(tof, servos):
                     print("no reading available for rightsensor--> turn robot left")
                     time.sleep(0.03)
                     self.leftTurn(r_t,k_p)
-            if self.lcnt==4 or self.rcnt==4:
+            if self.lcnt==4 and self.followFlag==0:
                 self.moveForward(r_t,k_p,self.forwardSensor())
                 time.sleep(0.02)
-                self.lturn=self.rTurn=False
-                self.lcnt=self.rCnt=0
-                     
+                self.lturn=False
+                self.lcnt=0
+
+            if self.rcnt==4 and self.followFlag==1:
+                self.moveForward(r_t,k_p,self.forwardSensor())
+                time.sleep(0.02)
+                self.rturn=False
+                self.rcnt=0
 
 
     def executeWallFollow(self):
