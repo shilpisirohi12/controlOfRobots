@@ -18,8 +18,10 @@ class wallFollow(tof, servos):
         self.fSensorDist=0
         self.followFlag=-1
         self.threshold=0.1
-        self.cnt=0
-        self.turn=False
+        self.lcnt=0
+        self.rcnt=0
+        self.lturn=False
+        self.rTurn=False
 
     
     def moveForward(self, r_t, k_p,y_t):
@@ -154,12 +156,14 @@ class wallFollow(tof, servos):
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
                     print("**********************Left Sensor do corrections***************")
-                    if self.turn==False:
-                        self.turn=True
-                        self.cnt=self.cnt+1
-                    else:
-                        self.cnt = self.cnt + 1
+                    if self.rturn==True:
+                        self.rcnt=self.rcnt+1
 
+                    if self.lturn==False:
+                        self.lturn=True
+                        self.lcnt=self.lcnt+1
+                    else:
+                        self.lcnt = self.lcnt + 1
                     self.sidepControl(r_t,k_p,self.lSensorDist)
             if self.lSensorDist > self.rSensorDist:
                 print("following wall wrt to rightSensor")
@@ -169,8 +173,14 @@ class wallFollow(tof, servos):
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
                     print("**********************Right Sensor do corrections***************")
-                    if self.turn==True:
-                        self.cnt=self.cnt+1
+                    if self.lturn==True:
+                        self.lcnt=self.lcnt+1
+
+                    if self.rturn==False:
+                        self.rturn=True
+                        self.rcnt=self.rcnt+1
+                    else:
+                        self.rcnt = self.rcnt + 1
                     self.sidepControl(r_t,k_p,self.rSensorDist)
 
             if self.fSensorDist < float(r_t) and self.lSensorDist <float(r_t):
@@ -189,11 +199,11 @@ class wallFollow(tof, servos):
                     print("no reading available for rightsensor--> turn robot left")
                     time.sleep(0.03)
                     self.leftTurn(r_t,k_p)
-            if self.cnt==4:
+            if self.lcnt==4 or self.rcnt==4:
                 self.moveForward(r_t,k_p)
                 time.sleep(0.02)
-                self.turn=False
-                self.cnt=0
+                self.lturn=self.rTurn=False
+                self.lcnt=self.rCnt=0
                      
 
 
