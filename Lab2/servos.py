@@ -194,10 +194,12 @@ class servos:
         for x in self.lSpeed:
             #Initializing the values
             if cnt ==0:
-                self.maxLeft=x
+                self.maxLeft = self.minLeft =x
                 #print("Lefts: ",self.maxLeft,"  ",self.minLeft)
             if float(self.maxLeft)< float(x):
-                self.maxLeft=x
+                self.maxLeft = x
+            if float(self.minLeft) > float(x):
+                self.minLeft = x
             cnt=cnt+1
         cnt=0
         for x in self.rSpeed:
@@ -206,26 +208,16 @@ class servos:
                 self.maxRight=x
                 #print("Rights: ",self.maxRight,"  ",self.minRight)
             if float(self.maxRight)< float(x):
-                self.maxRight=x
+                self.maxRight = x
+            if float(self.minRight) > float(x):
+                self.minRight = x
             cnt=cnt+1
-        #set minimum values, anything less then this will not be properly interpolated
-        self.minLeft = 0
-        self.minRight = 0
         
     def setSpeedsRPS(self, rpsLeft, rpsRight):
         #print("inside setSpeedsRPS",rpsLeft," ",rpsRight)
-        
-        #if  rpsLeft < float(self.minLeft) or rpsRight < float(self.minRight):
-        #    print("This speed requested is too low to produce accurate results. Please try again")
-        #    return
-        
-        #if rpsLeft > float(self.maxLeft) or rpsRight > float(self.maxRight):
-        #    print("this speed requested is too High. Please try again") 
-        #    return
-        #else:
         value = self.lin_interpolate(rpsLeft,rpsRight,self.wheel_calibration)
                 
-        print("Value Interpolated: ",float(value[0]), float(value[1]))
+        #print("Value Interpolated: ",float(value[0]), float(value[1]))
     
         self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(value[0]) / 20 * 4096))
         self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(value[1]) / 20 * 4096))
@@ -281,7 +273,7 @@ class servos:
         # IPS speeds in .csv file has been changed to have a +/- value
         # min/max function (in servos) will have to be changed to find the largest +/- value
         if abs(float(velSig)) > abs(float(self.maxRight)) or abs(float(velSig)) > abs(float(self.maxLeft)):
-            print("inside max ifs ",max(self.maxRight, self.maxLeft))
+            #print("inside max ifs ",max(self.maxRight, self.maxLeft))
             self.isMax=1
             return max(self.maxRight, self.maxLeft)
         else:
@@ -399,9 +391,13 @@ class servos:
         pwmL = pwmR = maxL = minL = maxR = minR = 0
         pwm_maxL = pwm_minL = pwm_maxR = pwm_minR = 0
         count = 0
+
         for x, y, z in data_lst:
             if count == 0:
-                minL = maxL = float(y)
+                if float(y) == spdL:
+                    pwmL = float(x)
+                else:
+                    minL = maxL = float(y)
             elif float(y) > spdL:
                 if abs(spdL - float(y)) < abs(spdL - maxL):
                     maxL = float(y)
@@ -415,13 +411,16 @@ class servos:
             count = count + 1
                 
         if pwmL == 0 and (maxL - minL)!=0:
-            #print("interpolate:", pwm_minL, pwm_maxL, minL, maxL, spdL)
+            #print("interpolate Left:", pwm_minL, pwm_maxL, minL, maxL, spdL)
             pwmL = (((pwm_minL*(maxL - spdL)) + (pwm_maxL*(spdL - minL))) / (maxL - minL))
             
         count = 0   
         for x, y, z in data_lst:
             if count == 0:
-                minR = maxR = float(z)
+                if float(z) == spdR:
+                    pwmR = float(x)
+                else:
+                    minR = maxR = float(z)
             elif float(z) > spdR:
                 if abs(spdR - float(z)) < abs(spdR - maxR):
                     maxR = float(z)
@@ -435,13 +434,13 @@ class servos:
             count = count + 1
                 
         if pwmR == 0 and (maxL - minL)!=0:
-            #print("Interpolate: ", pwm_minR, pwm_maxR, minR, maxR, spdR)
+            #print("Interpolate Right: ", pwm_minR, pwm_maxR, minR, maxR, spdR)
             pwmR = (pwm_minR*(maxR - spdR) + pwm_maxR*(spdR - minR)) / (maxR - minR)
                     
         return (pwmL,pwmR)
     
     def csvGenerator(self):
-        with open('/home/pi/assignments/git/controlOfRobots/Lab2/test_calibrations.csv', 'w', newline='') as csvfile:
+        with open('/home/pi/assignments/git/controlOfRobots/Lab2/calibrations.csv', 'w', newline='') as csvfile:
             fieldnames = ['PWM', 'RPS_Left', 'RPS_Right']
             csvWriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
             csvWriter.writeheader()
