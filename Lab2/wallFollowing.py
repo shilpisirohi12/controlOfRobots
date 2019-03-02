@@ -111,8 +111,7 @@ class wallFollow(tof, servos):
         self.e_t = float(r_t) - float(y_t)/25.4
         self.u_t = -(float(k_p) * self.e_t)
         rpsSpd=round((float(self.u_t))/(float(self.cf)),2)
-        self.u_rt = self.fSat(rpsSpd)        
-        #print("self.e_t: ", self.e_t, " self.u_t: ", self.u_t,"  rpsSpd: ",rpsSpd," self.u_rt: ",self.u_rt," k_p: ",k_p," r_t: ",r_t)
+        self.u_rt = self.fSat(rpsSpd)
         if abs(float(self.e_t)) < 0.5:
             print("&&&&&&TURNING&&&&&&&",abs(round(float(self.e_t),0)))
             if float(self.followFlag) ==1:
@@ -123,15 +122,8 @@ class wallFollow(tof, servos):
                 self.rightTurn90(r_t, k_p)
         else:
             speeds = self.lin_interpolate(abs(float(self.u_rt)),abs(float(self.u_rt)),self.wheel_calibration)
-            #print("Value Interpolated: ",float(speeds[0]), float(speeds[1]))
-            #if (float(speeds[0])>float(speeds[1])):
             self.lpwm=float(speeds[0])
             self.rpwm=float(speeds[1])
-            #else:
-                #self.lpwm=float(speeds[1])+0.1
-                #self.rpwm=float(speeds[0])-0.1
-                    #print("else----->flag: ",self.flag," lpwm: ",lpwm," rpwm: ",rpwm)
-        #print("self.isMax: ",self.isMax," self.lpwm: ",self.lpwm," rself.pwm: ",self.rpwm)   
             self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(self.lpwm)/ 20 * 4096))
             self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(self.rpwm)) / 20 * 4096))
             
@@ -158,7 +150,6 @@ class wallFollow(tof, servos):
                 print("following wall wrt to leftSensor")
                 self.followFlag = 0
                 if (((float(r_t)) + 0.5) > (float(self.lSensorDist) / 25.4) > (float(r_t) - 0.5)):
-                    print("@@@@@@@@@@@@@@@@@@@@@@@@@IFS@@@@@@@@@@@@@@@@@@@@@@", ((float(r_t)) + 0.5) ,">", (float(self.lSensorDist) / 25.4) ,">", (float(r_t) - 0.5))
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
                     print("**********************Left Sensor do corrections***************")
@@ -167,7 +158,6 @@ class wallFollow(tof, servos):
                 print("following wall wrt to rightSensor")
                 self.followFlag = 1
                 if (((float(r_t)) + 0.5) > (float(self.rSensorDist) / 25.4) > (float(r_t) - 0.5)):
-                    print("@@@@@@@@@@@@@@@@@@@@@@@@@IFS@@@@@@@@@@@@@@@@@@@@@@")
                     self.moveForward(r_t, k_p,self.fSensorDist);
                 else:
                     print("**********************Right Sensor do corrections***************")

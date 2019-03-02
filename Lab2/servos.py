@@ -146,8 +146,6 @@ class servos:
         for i in range(41):
             leftWheel = leftWheel + 0.01
             rightWheel = float(leftWheel)
-            #for j in range(41):
-            #rightWheel = rightWheel + 0.01
             self.pwm.set_pwm(self.LSERVO, 0, math.floor(leftWheel / 20 * 4096))
             self.pwm.set_pwm(self.RSERVO, 0, math.floor(rightWheel / 20 * 4096))
             time.sleep(1)
@@ -195,7 +193,6 @@ class servos:
             #Initializing the values
             if cnt ==0:
                 self.maxLeft = self.minLeft =x
-                #print("Lefts: ",self.maxLeft,"  ",self.minLeft)
             if float(self.maxLeft)< float(x):
                 self.maxLeft = x
             if float(self.minLeft) > float(x):
@@ -206,7 +203,6 @@ class servos:
             #Initializing the values
             if cnt ==0:
                 self.maxRight=x
-                #print("Rights: ",self.maxRight,"  ",self.minRight)
             if float(self.maxRight)< float(x):
                 self.maxRight = x
             if float(self.minRight) > float(x):
@@ -214,24 +210,14 @@ class servos:
             cnt=cnt+1
         
     def setSpeedsRPS(self, rpsLeft, rpsRight):
-        #print("inside setSpeedsRPS",rpsLeft," ",rpsRight)
         value = self.lin_interpolate(rpsLeft,rpsRight,self.wheel_calibration)
-                
-        #print("Value Interpolated: ",float(value[0]), float(value[1]))
-    
         self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(value[0]) / 20 * 4096))
         self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(value[1]) / 20 * 4096))
                    
     def setSpeedsIPS(self,ipsLeft, ipsRight,isMax,flag):
         print("inside setSpeedsIPS",ipsLeft," ",ipsRight)
         rpsSpd=round((float(self.u_t))/(float(self.cf)),2)
-        self.u_rt = self.fSat(rpsSpd) 
-        #speeds = self.lin_interpolate(rpsLeft,rpsRight,self.wheel_calibration)
-                
-        #print("Value Interpolated: ",float(value[0]), float(value[1]))
-    
-        #self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(value[0]) / 20 * 4096))
-        #self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(value[1]) / 20 * 4096))
+        self.u_rt = self.fSat(rpsSpd)
         if isMax==1:
             if flag==1:
                 lpwm=1.6
@@ -242,8 +228,6 @@ class servos:
         else:        
             speeds = self.lin_interpolate(abs(float(self.u_rt)),abs(float(self.u_rt)),self.wheel_calibration)
             print("Value Interpolated: ",float(speeds[0]), float(speeds[1]))
-                #lSpd = self.fSat(speeds[0])
-                #print("lSpd:  ",lSpd)
             if (float(speeds[0])>float(speeds[1])):
                 if self.flag==1:
                     lpwm=float(speeds[0])+0.1
@@ -251,7 +235,6 @@ class servos:
                 elif self.flag==0:
                     lpwm=float(speeds[1])-0.1
                     rpwm=float(speeds[0])+0.1
-                     #print("if----->flag: ",self.flag," lpwm: ",lpwm," rpwm: ",rpwm)
 
             else:
                 if self.flag==1:
@@ -260,20 +243,17 @@ class servos:
                 elif self.flag==0:
                     lpwm=float(speeds[0])-0.1
                     rpwm=float(speeds[1])+0.1
-                    #print("else----->flag: ",self.flag," lpwm: ",lpwm," rpwm: ",rpwm)
             print("self.isMax: ",isMax," flag: ",flag," lpwm: ",lpwm," rpwm: ",rpwm)   
         self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(lpwm)/ 20 * 4096))
         self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(rpwm)-0.003) / 20 * 4096))        
         
-        
-        #return value
+
 
     def fSat(self, velSig):
         # Saturation function, if the desired speed is too great, set to max speed
         # IPS speeds in .csv file has been changed to have a +/- value
         # min/max function (in servos) will have to be changed to find the largest +/- value
         if abs(float(velSig)) > abs(float(self.maxRight)) or abs(float(velSig)) > abs(float(self.maxLeft)):
-            #print("inside max ifs ",max(self.maxRight, self.maxLeft))
             self.isMax=1
             return max(self.maxRight, self.maxLeft)
         else:
@@ -298,16 +278,6 @@ class servos:
         #print("inside setSpeedsIPS",ipsLeft," ",ipsRight)
         rpsLeft=round((float(ipsLeft))/(float(self.cf)),2)
         rpsRight=round((float(ipsRight))/(float(self.cf)),2)
-        
-        #check for errors, if found return zeros to be caught by calling function
-        #if rpsLeft < float(self.minLeft) or rpsRight < float(self.minRight):
-        #    print("This speed is too low. Please try again")
-        #    return (0, 0)
-        
-        #if rpsLeft > float(self.maxLeft) or rpsRight > float(self.maxRight):
-        #    print("this speed is too High. Please try again")
-        #    return (0, 0)
-        #else:
         value = self.interpolate(rpsLeft,rpsRight,self.wheel_calibration)
             
         print("Value Interpolated: ",float(value[0]), float(value[1]))
@@ -339,12 +309,10 @@ class servos:
                 distanceL = abs(float(given_speedLeft) - float(y))
                 nearest_valueL = float(y)
                 left_spd=float(x)
-                #right_spd=float(y)
             if count > 0 and distanceL > abs(float(given_speedLeft) - float(y)):
                 distanceL = abs(float(given_speedLeft) - float(y))
                 nearest_valueL = float(y)
-                left_spd=float(x)             
-            #print("z: ", z, "  nearest: ", nearest_valueL, "left_spd: ",left_spd,"  dist: ", distanceL)
+                left_spd=float(x)
             count = count + 1
             
         pwmDistL = abs(1.5 - left_spd)   
@@ -355,10 +323,7 @@ class servos:
             left_spd = 1.5 + pwmDistL
         
         count = 0
-        #print("left_spd: ",left_spd)   
         for x, y, z in data_lst:
-            #if float(x)==float(left_spd):
-                #print("inside 1st if")
                 if count==0:
                     #print("inside count==0")
                     distanceR = abs(float(given_speedRight) - float(z))
