@@ -21,7 +21,7 @@ import math
 import csv
 import time
 from ThreadedWebcam import ThreadedWebcam
-from UnthreadedWebcam import UnthreadedWebcam
+
 
 FPS_SMOOTHING = 0.9
 
