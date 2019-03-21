@@ -31,8 +31,9 @@ RSERVO = 1
 def ctrlC(signum, frame):
     print("Exiting")
     # Stop the servos
-    pwm.set_pwm(LSERVO, 0, 0);
-    pwm.set_pwm(RSERVO, 0, 0);
+    pwm.set_pwm(LSERVO, 0, 0)
+    pwm.set_pwm(RSERVO, 0, 0)
+    camera.stop()
     exit()
 
 
@@ -185,4 +186,4 @@ while True:
         camera.stop()
         break
 
-#camera.stop()
+camera.stop()
