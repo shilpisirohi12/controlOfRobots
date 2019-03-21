@@ -134,12 +134,12 @@ cv.namedWindow(WINDOW1)
 cv.namedWindow(WINDOW2)
 
 # Create trackbars
-#cv.createTrackbar("Min Hue", WINDOW1, minH, 180, onMinHTrackbar)
-#cv.createTrackbar("Max Hue", WINDOW1, maxH, 180, onMaxHTrackbar)
-#cv.createTrackbar("Min Sat", WINDOW1, minS, 255, onMinSTrackbar)
-#cv.createTrackbar("Max Sat", WINDOW1, maxS, 255, onMaxSTrackbar)
-#cv.createTrackbar("Min Val", WINDOW1, minV, 255, onMinVTrackbar)
-#cv.createTrackbar("Max Val", WINDOW1, maxV, 255, onMaxVTrackbar)
+cv.createTrackbar("Min Hue", WINDOW1, minH, 180, onMinHTrackbar)
+cv.createTrackbar("Max Hue", WINDOW1, maxH, 180, onMaxHTrackbar)
+cv.createTrackbar("Min Sat", WINDOW1, minS, 255, onMinSTrackbar)
+cv.createTrackbar("Max Sat", WINDOW1, maxS, 255, onMaxSTrackbar)
+cv.createTrackbar("Min Val", WINDOW1, minV, 255, onMinVTrackbar)
+cv.createTrackbar("Max Val", WINDOW1, maxV, 255, onMaxVTrackbar)
 cnt=0
 fps, prev = 0.0, 0.0
 while True:
@@ -176,6 +176,7 @@ while True:
     cv.imshow(WINDOW2, frame_with_keypoints)
     time.sleep(10)
     if cnt==0:
+        print("inside cnt==0 condition:",cnt)
         pwm.set_pwm(LSERVO, 0, math.floor(1.7 / 20 * 4096));
         pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
         cnt=cnt+1
