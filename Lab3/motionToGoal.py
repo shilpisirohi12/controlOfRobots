@@ -131,7 +131,7 @@ def csvReader():
     global minLeft
     global maxRight
     global minRight
-    with open('/home/pi/assignments/git/controlOfRobots/Lab2/calibrations.csv', mode='r') as csvfile:
+    with open('/home/pi/assignments/labs/controlOfRobots/calibrations.csv', mode='r') as csvfile:
         csvReader = csv.DictReader(csvfile)
         for row in csvReader:
             arrLeft.append(row["PWM"])
@@ -310,9 +310,10 @@ def pControl(r_t, k_p):
         stopRobot()
 
     else:
-        print("inside else----------------------------------->")
+        print("inside else----------------------------------->",u_rt)
         setSpeedsRPS(u_rt,u_rt)
 
+csvReader() #loading the calibration file
 # Initialize the threaded camera
 # You can run the unthreaded camera instead by changing the line below.
 # Look for any differences in frame rate and latency.
