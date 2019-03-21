@@ -63,8 +63,8 @@ WINDOW2 = "Detected Blobs - Press Esc to quit"
 # Note: the range for hue is 0-180, not 0-255
 #minH =   0; minS = 27; minV =   0;
 #maxH = 180; maxS = 255; maxV = 255;
-minH =   0; minS = 27; minV =   51;
-maxH = 180; maxS = 181; maxV = 255;
+minH =   28; minS = 169; minV =   51;
+maxH = 180; maxS = 255; maxV = 255;
 
 
 
