@@ -17,6 +17,7 @@ import time
 import Adafruit_PCA9685
 import signal
 import math
+import sys
 sys.path.append('/home/pi/VL53L0X_rasp_python/python')
 import VL53L0X
 import RPi.GPIO as GPIO
