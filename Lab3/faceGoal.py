@@ -181,12 +181,13 @@ while True:
 
     if len(keypoints)>0:
         print("keypoints: ",len(keypoints))
-        pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096));
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
+        pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096))
+        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096))
     else:
         print("keypoints are less than or equal to zero: ", len(keypoints))
-        pwm.set_pwm(LSERVO, 0, math.floor(1.7 / 20 * 4096));
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
+        pwm.set_pwm(LSERVO, 0, math.floor(1.6 / 20 * 4096))
+        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096))
+        time.sleep(1)
 
 
 
