@@ -174,16 +174,7 @@ while True:
     # Display the frame
     cv.imshow(WINDOW1, mask)
     cv.imshow(WINDOW2, frame_with_keypoints)
-    time.sleep(10)
-    if cnt==0:
-        print("inside cnt==0 condition:",cnt)
-        pwm.set_pwm(LSERVO, 0, math.floor(1.7 / 20 * 4096));
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
-        cnt=cnt+1
 
-    if len(keypoints)>0 :
-        pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096));
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
 
     # Check for user input
     c = cv.waitKey(1)
