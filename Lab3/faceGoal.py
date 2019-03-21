@@ -105,12 +105,12 @@ class faceGoal(ThreadedWebcam):
         cv.namedWindow(self.WINDOW2)
 
         # Create trackbars
-        cv.createTrackbar("Min Hue", self.WINDOW1, minH, 180, self.onMinHTrackbar)
-        cv.createTrackbar("Max Hue", self.WINDOW1, maxH, 180, self.onMaxHTrackbar)
-        cv.createTrackbar("Min Sat", self.WINDOW1, minS, 255, self.onMinSTrackbar)
-        cv.createTrackbar("Max Sat", self.WINDOW1, maxS, 255, self.onMaxSTrackbar)
-        cv.createTrackbar("Min Val", self.WINDOW1, minV, 255, self.onMinVTrackbar)
-        cv.createTrackbar("Max Val", self.WINDOW1, maxV, 255, self.onMaxVTrackbar)
+        cv.createTrackbar("Min Hue", self.WINDOW1, self.minH, 180, self.onMinHTrackbar)
+        cv.createTrackbar("Max Hue", self.WINDOW1, self.maxH, 180, self.onMaxHTrackbar)
+        cv.createTrackbar("Min Sat", self.WINDOW1, self.minS, 255, self.onMinSTrackbar)
+        cv.createTrackbar("Max Sat", self.WINDOW1, self.maxS, 255, self.onMaxSTrackbar)
+        cv.createTrackbar("Min Val", self.WINDOW1, self.minV, 255, self.onMinVTrackbar)
+        cv.createTrackbar("Max Val", self.WINDOW1, self.maxV, 255, self.onMaxVTrackbar)
 
         fps, prev = 0.0, 0.0
         while True:
