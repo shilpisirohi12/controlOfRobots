@@ -233,6 +233,66 @@ def fSat(velSig):
         isMax==0
         return float(velSig)
 
+def lin_interpolate(rpsL, rpsR, data_lst):
+
+    spdL = float(rpsL)
+    spdR = float(rpsR)
+    pwmL = pwmR = maxL = minL = maxR = minR = 0
+    pwm_maxL = pwm_minL = pwm_maxR = pwm_minR = 0
+    count = 0
+
+    for x, y, z in data_lst:
+        if count == 0:
+            if float(y) == spdL:
+                pwmL = float(x)
+            else:
+                minL = maxL = float(y)
+        elif float(y) > spdL:
+            if abs(spdL - float(y)) < abs(spdL - maxL):
+                maxL = float(y)
+                pwm_maxL = float(x)
+        elif float(y) < spdL:
+            if abs(spdL - float(y)) < abs(spdL - minL):
+                minL = float(y)
+                pwm_minL = float(x)
+        elif float(y) == spdL:
+            pwmL = float(x)
+        count = count + 1
+
+    if pwmL == 0 and (maxL - minL) != 0:
+        # print("interpolate Left:", pwm_minL, pwm_maxL, minL, maxL, spdL)
+        pwmL = (((pwm_minL * (maxL - spdL)) + (pwm_maxL * (spdL - minL))) / (maxL - minL))
+
+    count = 0
+    for x, y, z in data_lst:
+        if count == 0:
+            if float(z) == spdR:
+                pwmR = float(x)
+            else:
+                minR = maxR = float(z)
+        elif float(z) > spdR:
+            if abs(spdR - float(z)) < abs(spdR - maxR):
+                maxR = float(z)
+                pwm_maxR = float(x)
+        elif float(z) < spdR:
+            if abs(spdR - float(z)) < abs(spdR - minR):
+                minR = float(z)
+                pwm_minR = float(x)
+        elif float(z) == spdR:
+            pwmR = float(x)
+        count = count + 1
+
+    if pwmR == 0 and (maxL - minL) != 0:
+        # print("Interpolate Right: ", pwm_minR, pwm_maxR, minR, maxR, spdR)
+        pwmR = (pwm_minR * (maxR - spdR) + pwm_maxR * (spdR - minR)) / (maxR - minR)
+
+    return (pwmL, pwmR)
+
+def setSpeedsRPS(rpsLeft, rpsRight):
+    value = lin_interpolate(rpsLeft,rpsRight,wheel_calibration)
+    pwm.set_pwm(LSERVO, 0, math.floor(float(value[0]) / 20 * 4096))
+    pwm.set_pwm(RSERVO, 0, math.floor(float(value[1]) / 20 * 4096))
+
 def pControl(r_t, k_p):
     # P controller function
     currTime = time.monotonic()
@@ -249,7 +309,7 @@ def pControl(r_t, k_p):
 
     else:
         print("inside else----------------------------------->")
-        #self.setSpeedsRPS(self.u_rt,self.u_rt)
+        setSpeedsRPS(u_rt,u_rt)
 
 # Initialize the threaded camera
 # You can run the unthreaded camera instead by changing the line below.
