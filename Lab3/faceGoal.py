@@ -169,17 +169,19 @@ while True:
     # Write text onto the frame
     cv.putText(frame_with_keypoints, "FPS: {:.1f}".format(fps), (5, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0))
     cv.putText(frame_with_keypoints, "{} blobs".format(len(keypoints)), (5, 35), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0))
-    pwm.set_pwm(LSERVO, 0, math.floor(1.7 / 20 * 4096));
-    pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
-    time.sleep(4)
-    if len(keypoints)>0 :
-        pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096));
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
+
     
     # Display the frame
     cv.imshow(WINDOW1, mask)
     cv.imshow(WINDOW2, frame_with_keypoints)
-    
+    time.sleep(5)
+    pwm.set_pwm(LSERVO, 0, math.floor(1.7 / 20 * 4096));
+    pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
+    time.sleep(1)
+    if len(keypoints)>0 :
+        pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096));
+        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
+
     # Check for user input
     c = cv.waitKey(1)
     if c == 27 or c == ord('q') or c == ord('Q'): # Esc or Q
