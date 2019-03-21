@@ -120,10 +120,11 @@ class faceGoal(ThreadedWebcam):
             # Blob detection works better in the HSV color space
             # (than the RGB color space) so the frame is converted to HSV.
             frame_hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+            print("frame_hsv: ",frame_hsv)
 
             # Create a mask using the given HSV range
-            mask = cv.inRange('', (self.minH, self.minS, self.minV), (self.maxH, self.maxS, self.maxV))
-
+            mask = cv.inRange(frame_hsv, (self.minH, self.minS, self.minV), (self.maxH, self.maxS, self.maxV))
+            print("mask: ",mask)
             # Run the SimpleBlobDetector on the mask.
             # The results are stored in a vector of 'KeyPoint' objects,
             # which describe the location and size of the blobs.
