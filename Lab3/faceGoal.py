@@ -84,6 +84,7 @@ class faceGoal(ThreadedWebcam):
 
 
     def  blobDetect(self):
+        print("***inside Blob Detect***")
         # Attempt to open a SimpleBlobDetector parameters file if it exists,
         # Otherwise, one will be generated.
         # These values WILL need to be adjusted for accurate and fast blob detection.
@@ -151,3 +152,6 @@ class faceGoal(ThreadedWebcam):
                 break
 
         self.camera.stop()
+
+obj=faceGoal()
+obj.blobDetect()
