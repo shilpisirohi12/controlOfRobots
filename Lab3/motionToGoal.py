@@ -259,6 +259,7 @@ def lin_interpolate(rpsL, rpsR, data_lst):
             pwmL = float(x)
         count = count + 1
 
+
     if pwmL == 0 and (maxL - minL) != 0:
         # print("interpolate Left:", pwm_minL, pwm_maxL, minL, maxL, spdL)
         pwmL = (((pwm_minL * (maxL - spdL)) + (pwm_maxL * (spdL - minL))) / (maxL - minL))
