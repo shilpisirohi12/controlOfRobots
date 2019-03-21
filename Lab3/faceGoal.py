@@ -116,6 +116,7 @@ class faceGoal(ThreadedWebcam):
         while True:
             # Calculate FPS
             now = time.time()
+            print(now,"  ",prev);
             fps = (fps*self.FPS_SMOOTHING + (1/(now - prev))*(1.0 - self.FPS_SMOOTHING))
             prev = now
 
