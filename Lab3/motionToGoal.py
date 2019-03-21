@@ -71,6 +71,7 @@ fSensor.start_ranging(VL53L0X.VL53L0X_GOOD_ACCURACY_MODE)
 
 e_t = u_t = y_t = u_rt = 0
 sleep_interval = 0.05
+wheel_calibration= []
 isMax=-1
 
 # This function is called when Ctrl+C is pressed.
@@ -141,7 +142,7 @@ def csvReader():
 
         cnt = 0
         global wheel_calibration
-        wheel_calibration= []
+
         for l in range(len(arrLeft)):
             sublist = []
             sublist.append(arrLeft[cnt])
