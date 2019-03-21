@@ -128,7 +128,7 @@ class faceGoal(ThreadedWebcam):
             frame_hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
             # Create a mask using the given HSV range
-            mask = cv.inRange(frame_hsv, (minH, minS, minV), (maxH, maxS, maxV))
+            mask = cv.inRange(frame_hsv, (self.minH, self.minS, self.minV), (self.maxH, self.maxS, self.maxV))
 
             # Run the SimpleBlobDetector on the mask.
             # The results are stored in a vector of 'KeyPoint' objects,
