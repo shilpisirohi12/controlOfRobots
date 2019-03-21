@@ -15,12 +15,13 @@
 import cv2 as cv
 import time
 from ThreadedWebcam import ThreadedWebcam
-from UnthreadedWebcam import UnthreadedWebcam
 
-class faceGoal:
+
+class faceGoal(ThreadedWebcam):
 
     # To do initialization
     def __init__(self):
+        super().__init__()
         self.FPS_SMOOTHING = 0.9
 
         # Window names
