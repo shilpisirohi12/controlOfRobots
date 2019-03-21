@@ -143,7 +143,7 @@ cv.createTrackbar("Min Sat", WINDOW1, minS, 255, onMinSTrackbar)
 cv.createTrackbar("Max Sat", WINDOW1, maxS, 255, onMaxSTrackbar)
 cv.createTrackbar("Min Val", WINDOW1, minV, 255, onMinVTrackbar)
 cv.createTrackbar("Max Val", WINDOW1, maxV, 255, onMaxVTrackbar)
-cnt=0
+
 fps, prev = 0.0, 0.0
 while True:
     # Calculate FPS
@@ -177,15 +177,15 @@ while True:
     # Display the frame
     #cv.imshow(WINDOW1, mask)
     cv.imshow(WINDOW2, frame_with_keypoints)
-    if cnt ==0:
-        print("inside cnt==0 condition: ",cnt)
-        pwm.set_pwm(LSERVO, 0, math.floor(1.7 / 20 * 4096));
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
-        cnt=cnt+1
+
 
     if len(keypoints)>0:
         print("keypoints: ",len(keypoints))
         pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096));
+        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
+    else:
+        print("keypoints are less than or equal to zero: ", len(keypoints))
+        pwm.set_pwm(LSERVO, 0, math.floor(1.7 / 20 * 4096));
         pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096));
 
 
