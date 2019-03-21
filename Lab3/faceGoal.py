@@ -30,7 +30,7 @@ class faceGoal(ThreadedWebcam):
 
         # Default HSV ranges
         # Note: the range for hue is 0-180, not 0-255
-        self.minH =   0; self.minS = 127; self.minV =   0;
+        self.minH = 0; self.minS = 127; self.minV = 0;
         self.maxH = 180; self.maxS = 255; self.maxV = 255;
 
         # Initialize the threaded camera
@@ -47,40 +47,34 @@ class faceGoal(ThreadedWebcam):
     # These functions are called when the user moves a trackbar
     def onMinHTrackbar(self,val):
         # Calculate a valid minimum red value and re-set the trackbar.
-        global minH
-        global maxH
-        minH = min(val, self.maxH - 1)
-        cv.setTrackbarPos("Min Hue", self.WINDOW1, minH)
+
+        self.minH = min(val, self.maxH - 1)
+        cv.setTrackbarPos("Min Hue", self.WINDOW1, self.minH)
 
     def onMinSTrackbar(self,val):
-        global minS
-        global maxS
-        minS = min(val, self.maxS - 1)
-        cv.setTrackbarPos("Min Sat", self.WINDOW1, minS)
+
+        self.minS = min(val, self.maxS - 1)
+        cv.setTrackbarPos("Min Sat", self.WINDOW1, self.minS)
 
     def onMinVTrackbar(self,val):
-        global minV
-        global maxV
-        minV = min(val, self.maxV - 1)
-        cv.setTrackbarPos("Min Val", self.WINDOW1, minV)
+
+        self.minV = min(val, self.maxV - 1)
+        cv.setTrackbarPos("Min Val", self.WINDOW1, self.minV)
 
     def onMaxHTrackbar(self,val):
-        global minH
-        global maxH
-        maxH = max(val, self.minH + 1)
-        cv.setTrackbarPos("Max Hue", self.WINDOW1, maxH)
+
+        self.maxH = max(val, self.minH + 1)
+        cv.setTrackbarPos("Max Hue", self.WINDOW1, self.maxH)
 
     def onMaxSTrackbar(self,val):
-        global minS
-        global maxS
-        maxS = max(val, self.minS + 1)
-        cv.setTrackbarPos("Max Sat", self.WINDOW1, maxS)
+
+        self.maxS = max(val, self.minS + 1)
+        cv.setTrackbarPos("Max Sat", self.WINDOW1, self.maxS)
 
     def onMaxVTrackbar(self,val):
-        global minV
-        global maxV
-        maxV = max(val, self.minV + 1)
-        cv.setTrackbarPos("Max Val", self.WINDOW1, maxV)
+
+        self.maxV = max(val, self.minV + 1)
+        cv.setTrackbarPos("Max Val", self.WINDOW1, self.maxV)
 
 
     def  blobDetect(self):
@@ -119,7 +113,7 @@ class faceGoal(ThreadedWebcam):
             print(now,"  ",prev);
             fps = (fps*self.FPS_SMOOTHING + (1/(now - prev))*(1.0 - self.FPS_SMOOTHING))
             prev = now
-
+            print("fps:",fps)
             # Get a frame
             frame = self.camera.read()
 
@@ -144,7 +138,7 @@ class faceGoal(ThreadedWebcam):
 
             # Display the frame
             cv.imshow(self.WINDOW1, mask)
-            cv.imshow(self.WINDOW2, frame_with_keypoints)
+            #cv.imshow(self.WINDOW2, frame_with_keypoints)
 
             # Check for user input
             c = cv.waitKey(1)
