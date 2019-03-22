@@ -213,6 +213,11 @@ class servos:
         value = self.lin_interpolate(rpsLeft,rpsRight,self.wheel_calibration)
         self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(value[0]) / 20 * 4096))
         self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(value[1]) / 20 * 4096))
+
+    def setSpeedRPS(self, rpsLeft, rpsRight):
+        #value = self.lin_interpolate(rpsLeft,rpsRight,self.wheel_calibration)
+        self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(rpsLeft) / 20 * 4096))
+        self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(rpsRight) / 20 * 4096))
                    
     def setSpeedsIPS(self,ipsLeft, ipsRight,isMax,flag):
         print("inside setSpeedsIPS",ipsLeft," ",ipsRight)
