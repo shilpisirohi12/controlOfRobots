@@ -18,7 +18,7 @@ import Adafruit_PCA9685
 import signal
 import math
 from ThreadedWebcam import ThreadedWebcam
-from UnthreadedWebcam import UnthreadedWebcam
+from servos import servos
 
 # The servo hat uses its own numbering scheme within the Adafruit library.
 # 0 represents the first servo, 1 for the second, and so on.
@@ -107,6 +107,9 @@ def onMaxVTrackbar(val):
     cv.setTrackbarPos("Max Val", WINDOW1, maxV)
 
 
+
+servo=servos()
+
 # Initialize the threaded camera
 # You can run the unthreaded camera instead by changing the line below.
 # Look for any differences in frame rate and latency.
@@ -181,12 +184,10 @@ while True:
 
     if len(keypoints)>0:
         print("keypoints: ",len(keypoints))
-        pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096))
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096))
+        servo.setSpeedsRPS(1.6, 1.5)
     else:
         print("keypoints are less than or equal to zero: ", len(keypoints))
-        pwm.set_pwm(LSERVO, 0, math.floor(1.6 / 20 * 4096))
-        pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096))
+        servo.setSpeedsRPS(1.6, 1.5)
         time.sleep(1)
 
 
