@@ -155,14 +155,11 @@ while True:
 
     if len(keypoints)>0:
         print("keypoints: ",len(keypoints))
-        #pwm.set_pwm(LSERVO, 0, math.floor(1.5 / 20 * 4096))
-        #pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096))
-        wallDist.setSpeedsRPS(1.5,1.5)
+        #wallDist.setSpeedRPS(1.5,1.5)
+        wallDist.towardsWall(5,0.6)
     else:
         print("keypoints are less than or equal to zero: ", len(keypoints))
-        #pwm.set_pwm(LSERVO, 0, math.floor(1.6 / 20 * 4096))
-        #pwm.set_pwm(RSERVO, 0, math.floor(1.5 / 20 * 4096))
-        wallDist.setSpeedsRPS(1.6, 1.5)
+        wallDist.setSpeedRPS(1.6, 1.5)
         time.sleep(1)
 
     # Check for user input

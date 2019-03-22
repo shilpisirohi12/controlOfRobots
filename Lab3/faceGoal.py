@@ -184,7 +184,7 @@ while True:
 
     if len(keypoints)>0:
         print("keypoints: ",len(keypoints))
-        servo.setSpeedsRPS(1.6, 1.5)
+        servo.setSpeedRPS(1.5, 1.5)
     else:
         print("keypoints are less than or equal to zero: ", len(keypoints))
         servo.setSpeedRPS(1.6, 1.5)
