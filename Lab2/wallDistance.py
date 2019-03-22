@@ -77,7 +77,7 @@ class wallDistance(tof, servos):
             self.towardsWall(desired_dist, p)
 
 
-obj = wallDistance()
-obj.executeWallDist()
+#obj = wallDistance()
+#obj.executeWallDist()
 
 
