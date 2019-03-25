@@ -155,7 +155,9 @@ while True:
 
     if len(keypoints)>0:
         print("keypoints: ",len(keypoints))
-        #wallDist.setSpeedRPS(1.5,1.5)
+        wallDist.setSpeedRPS(1.5,1.5)
+    elif len(keypoints)==1:
+        print("Keypoint detected is 1")
         wallDist.towardsWall(5,0.6)
     else:
         print("keypoints are less than or equal to zero: ", len(keypoints))
