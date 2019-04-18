@@ -1,0 +1,17 @@
+Cell,west,north,east,south,visit,color
+0,W,W,O,O,True,0
+1,O,W,O,W,True,0
+2,O,W,O,W,True,0
+3,O,W,W,O,True,0
+4,W,O,W,O,True,0
+5,W,W,O,O,True,0
+6,O,W,W,O,True,0
+7,W,O,W,O,True,0
+8,W,O,W,O,True,0
+9,W,O,W,O,True,0
+10,W,O,O,W,True,0
+11,O,O,W,W,True,0
+12,W,O,O,W,True,0
+13,O,O,O,W,True,0
+14,O,W,O,W,True,0
+15,O,W,W,W,True,0
