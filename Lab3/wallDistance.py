@@ -48,14 +48,13 @@ class wallDistance(tof, servos):
         self.startTime = time.monotonic()
         #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@(float(self.forwardSensor())/25.4-float(desired_dist))@@@",(float(self.forwardSensor())/25.4-float(desired_dist)))
             
-        while True:
-            #print("Walking towards Wall---",self.forwardSensor())
-            self.y_t = float(self.forwardSensor())/25.4
-            #print("y_t: ",self.forwardSensor(),"  float(self.y_t)/25.4:",float(self.y_t));
-            if float(self.y_t) >45:
-                print("******WARNING: EXCEEDING THE SENSOR's RANGE********")
-            self.pControl(desired_dist, p)
-            time.sleep(self.sleep_interval)  # might need to be half second or faster...
+
+        self.y_t = float(self.forwardSensor())/25.4            
+        if float(self.y_t) >45:
+            print("******WARNING: EXCEEDING THE SENSOR's RANGE********")
+
+        self.pControl(desired_dist, p)
+        time.sleep(self.sleep_interval)  # might need to be half second or faster...
 
     def executeWallDist(self):
         self.csvReader()
@@ -77,7 +76,7 @@ class wallDistance(tof, servos):
             self.towardsWall(desired_dist, p)
 
 
-obj = wallDistance()
-obj.executeWallDist()
+#obj = wallDistance()
+#obj.executeWallDist()
 
 

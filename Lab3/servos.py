@@ -442,7 +442,51 @@ class servos:
                 self.wheel_calibration.append(sublist)
 
             self.min_max()        
-            print("mins n maxs: ",self.minLeft," ",self.maxLeft," ",self.minRight,"  ",self.maxRight)
+            #print("mins n maxs: ",self.minLeft," ",self.maxLeft," ",self.minRight,"  ",self.maxRight)
+            
+    def moveStraight(self,dist,sec_time):
+        self.resetCounts()
+        wheel_diam = 2.5
+        
+        avg_speed=float(dist)/float(sec_time)
+        rps_speed= round(float(avg_speed)/(2.5*3.14),2)
+        cnt = 0
+        req=0
+        
+        value = self.interpolate(rps_speed, rps_speed, self.wheel_calibration)
+        print("Value Interpolated: ",value)
+        #cal_time=float(dist)/(float(value[2])*(2.61))
+    
+        tick_length = (float(wheel_diam) * 3.14)/32
+        num_tick = float(dist) / float(tick_length)
+        tick_count = self.rTick
+        print("Ticks needed: ", num_tick)
+        
+        if rps_speed>0:
+            print("*************************")
+            print("Requested Speed: ",rps_speed)
+            print("Maximum robot can go with the speed of ",value[2])
+            print("If it is fine. Then press 'Y' to make robot move. Else press 'N' to cancel:",end="")
+            response=input()
+            if response=='y' or response=='Y':
+                self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(value[0])/ 20 * 4096))
+                self.pwm.set_pwm(self.RSERVO, 0, math.floor((float(value[1])-0.003)/ 20 * 4096))
+
+                #print("cal_time: ",cal_time)
+                #time.sleep(round(cal_time,0))
+                while(float(tick_count) <= num_tick):
+                    tick_count = self.rTick
+                    #print("Tick count: ", tick_count)
+        
+                tick_count = 0
+                self.stopRobot()
+                                    
+                    
+        else:
+                self.pwm.set_pwm(self.LSERVO, 0, math.floor(float(value[0])/ 20 * 4096))
+                self.pwm.set_pwm(self.RSERVO, 0, math.floor(float(value[1])/ 20 * 4096))
+                
+                self.stopRobot()
             
     
 

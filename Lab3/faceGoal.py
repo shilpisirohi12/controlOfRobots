@@ -61,7 +61,7 @@ WINDOW2 = "Detected Blobs - Press Esc to quit"
 
 # Default HSV ranges
 # Note: the range for hue is 0-180, not 0-255
-minH =   0; minS = 127; minV =   0;
+minH =   140; minS = 155; minV =   60;
 maxH = 180; maxS = 255; maxV = 255;
 #minH =   28; minS = 169; minV =   51;
 #maxH = 180; maxS = 255; maxV = 255;
@@ -176,19 +176,27 @@ while True:
     cv.putText(frame_with_keypoints, "FPS: {:.1f}".format(fps), (5, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0))
     cv.putText(frame_with_keypoints, "{} blobs".format(len(keypoints)), (5, 35), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0))
 
-    
+
     # Display the frame
     #cv.imshow(WINDOW1, mask)
     cv.imshow(WINDOW2, frame_with_keypoints)
 
 
     if len(keypoints)>0:
-        print("keypoints: ",len(keypoints))
-        servo.setSpeedRPS(1.5, 1.5)
+        #print(keypoints[0].pt[0],"   ",keypoints[0].pt[1],"   ",keypoints[0].size);
+        #print("keypoints: ",len(keypoints))
+        if float(keypoints[0].pt[0]) > 380:
+            servo.setSpeedRPS(1.55, 1.5)
+        elif float(keypoints[0].pt[0]) < 260:
+            servo.setSpeedRPS(1.5, 1.45)       
+        else:   
+            servo.setSpeedRPS(1.5, 1.5)
+            time.sleep(1)
+        time.sleep(0.02)
     else:
-        print("keypoints are less than or equal to zero: ", len(keypoints))
-        servo.setSpeedRPS(1.6, 1.5)
-        time.sleep(1)
+       # print("keypoints are less than or equal to zero: ", len(keypoints))
+        servo.setSpeedRPS(1.55, 1.5)
+        time.sleep(0.5)
 
 
 
