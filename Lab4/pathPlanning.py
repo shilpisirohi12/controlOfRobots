@@ -177,6 +177,7 @@ class pathPlanning():
                 print("diff: ",diff)
                 if diff == 4:
                     print("move up")
+                    print("orient:",Mapping.orient)
                     Mapping.moveForward(self.maze,17,8)
                 if diff == -4:
                     print("move right")
@@ -184,6 +185,7 @@ class pathPlanning():
                     Mapping.moveRight(self.maze)
                 if diff == -1:
                     print("move right")
+                    print("orient:",Mapping.orient)
                     Mapping.moveRight(self.maze)
                 if diff == 1:
                     print("move left")
