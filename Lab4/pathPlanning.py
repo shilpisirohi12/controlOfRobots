@@ -16,6 +16,7 @@ class Cell(servos):
     def __init__(self, west, north, east, south,weight=-1, visited=False):
         # There are 4 walls per cell
         # Wall values can be 'W', 'O', or '?' (wall, open, or unknown)
+        super().__init__()
         self.west = west
         self.north = north
         self.east = east
@@ -48,7 +49,9 @@ class pathPlanning():
 
     def reader(self):
         #Reading the mapping from the file
-        with open('./mazeMap.csv', mode='r') as csvfile:
+        
+        #with open('./mazeMap.csv', mode='r') as csvfile:
+        with open('/home/pi/Desktop/Lab_4/mazeMap.csv', mode='r') as csvfile:
             csvReader = csv.DictReader(csvfile)
             cnt = 0
             for row in csvReader:
@@ -174,65 +177,16 @@ class pathPlanning():
                 print("diff: ",diff)
                 if diff == 4:
                     print("move up")
-                    self.moveForward(self.maze,17,8)
+                    Mapping.moveForward(self.maze,17,8)
                 if diff == -4:
                     print("move right")
+                    print("orient:",Mapping.orient)
+                    Mapping.moveRight(self.maze)
                 if diff == -1:
                     print("move right")
+                    Mapping.moveRight(self.maze)
                 if diff == 1:
                     print("move left")
-
-    def moveForward(self,maze, dist, sec_time):
-        print("Moving Straight")
-        self.resetCounts()
-        wheel_diam = 2.5
-
-        avg_speed = float(dist) / float(sec_time)
-        rps_speed = round(float(avg_speed) / (2.5 * 3.14), 2)
-        cnt = 0
-        req = 0
-
-        # value = servos.interpolate(rps_speed, rps_speed, servos.wheel_calibration)
-        # print("Value Interpolated: ",value)
-        # cal_time=float(dist)/(float(value[2])*(2.61))
-
-        tick_length = (float(wheel_diam) * 3.14) / 32
-        num_tick = float(dist) / float(tick_length)
-        tick_count = servos.rTick
-        print("Ticks needed: ", num_tick)
-
-        while (float(tick_count) <= num_tick):
-            lDist = float(tof.leftDistance() / 25.4)
-            rDist = float(tof.rightDistance() / 25.4)
-            fDist = float(tof.forwardSensor() / 25.4)
-
-            distError = lDist - rDist
-
-            # if no walls nearby, just move straight
-            if fDist < 4:
-                print("Too close to front wall... Back up")
-                Mapping.backUp(maze)
-                break
-            if lDist > 12 and rDist > 12:
-                servos.setSpeedsIPS(3.5, 3.5)
-                # else, use Pcontrollerg
-            elif distError < 0:
-                # print("Left PControl Sensor Distance: ", lDist)
-                Mapping.leftpControl(maze, 7.5, 0.4, lDist)
-            else:
-                # print("Right PControl Sensor Distance: ", rDist)
-                Mapping.rightpControl(maze, 7.5, 0.4, rDist)
-                # print("Tick count: ", tick_count)
-                # increased sleep, should help prevent scneario of sensor picking up edges of walls
-            time.sleep(0.2)
-            tick_count = servos.rTick
-
-        tick_count = 0
-        servos.stopRobot()
-        time.sleep(0.5)
-
-
-
 
 
     def path(self,dir,start,end):

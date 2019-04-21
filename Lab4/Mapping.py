@@ -928,24 +928,22 @@ frame = camera.read()
 
 # Blob detection works better in the HSV color space
 # (than the RGB color space) so the frame is converted to HSV.
-frame_hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+#frame_hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
 # Create a mask using the given HSV range
-mask = cv.inRange(frame_hsv, (minH, minS, minV), (maxH, maxS, maxV))
+#mask = cv.inRange(frame_hsv, (minH, minS, minV), (maxH, maxS, maxV))
 
 # Run the SimpleBlobDetector on the mask.
 # The results are stored in a vector of 'KeyPoint' objects,
 # which describe the location and size of the blobs.
-keypoints = detector.detect(mask)
+#keypoints = detector.detect(mask)
 
 # For each detected blob, draw a circle on the frame
-frame_with_keypoints = cv.drawKeypoints(frame, keypoints, None, color=(0, 255, 0),
-                                        flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+#frame_with_keypoints = cv.drawKeypoints(frame, keypoints, None, color=(0, 255, 0),flags=cv.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
 # Write text onto the frame
-cv.putText(frame_with_keypoints, "FPS: {:.1f}".format(fps), (5, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
-cv.putText(frame_with_keypoints, "{} blobs".format(len(keypoints)), (5, 35), cv.FONT_HERSHEY_SIMPLEX, 0.5,
-           (0, 255, 0))
+#cv.putText(frame_with_keypoints, "FPS: {:.1f}".format(fps), (5, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0))
+#cv.putText(frame_with_keypoints, "{} blobs".format(len(keypoints)), (5, 35), cv.FONT_HERSHEY_SIMPLEX, 0.5,(0, 255, 0))
 
     # Display the frame
     #cv.imshow(WINDOW1, mask)
