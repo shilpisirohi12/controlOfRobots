@@ -7,10 +7,12 @@ from ThreadedWebcam import ThreadedWebcam
 import random
 import math
 import RPi.GPIO as GPIO
+from servos import servos
+from tof import tof
 import Mapping
 
 
-class Cell:
+class Cell(servos,tof):
     def __init__(self, west, north, east, south,weight=-1, visited=False):
         # There are 4 walls per cell
         # Wall values can be 'W', 'O', or '?' (wall, open, or unknown)
@@ -182,7 +184,7 @@ class pathPlanning():
 
     def moveForward(self,maze, dist, sec_time):
         print("Moving Straight")
-        servos.resetCounts()
+        self.resetCounts()
         wheel_diam = 2.5
 
         avg_speed = float(dist) / float(sec_time)
