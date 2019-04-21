@@ -12,7 +12,7 @@ from tof import tof
 import Mapping
 
 
-class Cell(servos,tof):
+class Cell(servos):
     def __init__(self, west, north, east, south,weight=-1, visited=False):
         # There are 4 walls per cell
         # Wall values can be 'W', 'O', or '?' (wall, open, or unknown)
