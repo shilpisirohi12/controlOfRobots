@@ -1,6 +1,15 @@
 #import Mapping
 import csv
 from array import *
+import cv2 as cv
+import time
+from ThreadedWebcam import ThreadedWebcam
+import random
+import math
+import RPi.GPIO as GPIO
+from servos import servos
+from tof import tof
+import Mapping
 
 
 class Cell:
@@ -33,7 +42,7 @@ class pathPlanning():
             Cell('W','?','?','W',False), Cell('?','?','?','W',False), Cell('?','?','?','W',False), Cell('?','?','W','W',False)
         ]
 
-
+        self.shortestPathCounter=-1
         self.pos=[(0,0),(0,1),(0,2),(0,3),(1,0),(1,1),(1,2),(1,3),(2,0),(2,1),(2,2),(2,3),(3,0),(3,1),(3,2),(3,3)]
         self.paths=[]
 
@@ -131,19 +140,99 @@ class pathPlanning():
                     self.path('S',start,end)
                 print("openPaths: ",openPaths[0]," ",openPaths[1]," ",openPaths[2]," ",openPaths[3]," ",possiblePaths)
 
-            shortestPath=-1
+
             for i in range(possiblePaths-1):
                 if len(self.paths[i])<len(self.paths[i+1]):
                     #print(len(self.paths[i]),"  ",len(self.paths[i+1]))
-                    shortestPath=i
+                    self.shortestPathCounter=i
                 else:
-                    shortestPath=i+1
-            print("shortestPath: ",shortestPath)
-            print("square  numbers: ",self.paths[shortestPath])
+                    self.shortestPathCounter=i+1
+            print("shortestPath: ",self.shortestPathCounter)
+            print("square  numbers: ",self.paths[self.shortestPathCounter])
 
-            if shortestPath != -1:
+            if self.shortestPathCounter != -1:
                 isShortPath=True
+                self.moveTheRobot(start,end)
             #print(self.maze[self.pos[end-1][0]*4+self.pos[end-1][1]].east)
+
+
+    def moveTheRobot(self,start,end):
+        print("*************inside moveTheRobot***********************")
+        stepsCnt=len(self.paths[self.shortestPathCounter])
+        prevStep=self.paths[self.shortestPathCounter][0]
+        for steps in range(stepsCnt):
+            print("******************************")
+            print(steps,"  ",self.paths[self.shortestPathCounter][steps])
+            if self.paths[self.shortestPathCounter][steps]==start:
+                print("At the starting point")
+                prevStep=start
+            else:
+                prevStep=self.paths[self.shortestPathCounter][steps-1]
+                #print("Start the movement")
+                nextStep=self.paths[self.shortestPathCounter][steps]
+                diff=prevStep-nextStep
+                print("diff: ",diff)
+                if diff == 4:
+                    print("move up")
+                    self.moveForward(self.maze,17,8)
+                if diff == -4:
+                    print("move right")
+                if diff == -1:
+                    print("move right")
+                if diff == 1:
+                    print("move left")
+
+    def moveForward(self,maze, dist, sec_time):
+        print("Moving Straight")
+        servos.resetCounts()
+        wheel_diam = 2.5
+
+        avg_speed = float(dist) / float(sec_time)
+        rps_speed = round(float(avg_speed) / (2.5 * 3.14), 2)
+        cnt = 0
+        req = 0
+
+        # value = servos.interpolate(rps_speed, rps_speed, servos.wheel_calibration)
+        # print("Value Interpolated: ",value)
+        # cal_time=float(dist)/(float(value[2])*(2.61))
+
+        tick_length = (float(wheel_diam) * 3.14) / 32
+        num_tick = float(dist) / float(tick_length)
+        tick_count = servos.rTick
+        print("Ticks needed: ", num_tick)
+
+        while (float(tick_count) <= num_tick):
+            lDist = float(tof.leftDistance() / 25.4)
+            rDist = float(tof.rightDistance() / 25.4)
+            fDist = float(tof.forwardSensor() / 25.4)
+
+            distError = lDist - rDist
+
+            # if no walls nearby, just move straight
+            if fDist < 4:
+                print("Too close to front wall... Back up")
+                Mapping.backUp(maze)
+                break
+            if lDist > 12 and rDist > 12:
+                servos.setSpeedsIPS(3.5, 3.5)
+                # else, use Pcontroller
+            elif distError < 0:
+                # print("Left PControl Sensor Distance: ", lDist)
+                Mapping.leftpControl(maze, 7.5, 0.4, lDist)
+            else:
+                # print("Right PControl Sensor Distance: ", rDist)
+                Mapping.rightpControl(maze, 7.5, 0.4, rDist)
+                # print("Tick count: ", tick_count)
+                # increased sleep, should help prevent scneario of sensor picking up edges of walls
+            time.sleep(0.2)
+            tick_count = servos.rTick
+
+        tick_count = 0
+        servos.stopRobot()
+        time.sleep(0.5)
+
+
+
 
 
     def path(self,dir,start,end):
