@@ -7,8 +7,6 @@ from ThreadedWebcam import ThreadedWebcam
 import random
 import math
 import RPi.GPIO as GPIO
-from servos import servos
-from tof import tof
 import Mapping
 
 
@@ -215,7 +213,7 @@ class pathPlanning():
                 break
             if lDist > 12 and rDist > 12:
                 servos.setSpeedsIPS(3.5, 3.5)
-                # else, use Pcontroller
+                # else, use Pcontrollerg
             elif distError < 0:
                 # print("Left PControl Sensor Distance: ", lDist)
                 Mapping.leftpControl(maze, 7.5, 0.4, lDist)
