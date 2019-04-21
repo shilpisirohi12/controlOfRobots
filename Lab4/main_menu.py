@@ -3,9 +3,11 @@ from servos import servos
 import RPi.GPIO as GPIO
 import time
 import math
+from pathPlanning import pathPlanning
+import Mapping_Lib
 
 
-class main_menu(servos):
+class main_menu(servos,pathPlanning):
 
     def __init__(self):
         super().__init__()
@@ -21,7 +23,9 @@ class main_menu(servos):
             Mapping.Cell('W','?','?','?',False), Mapping.Cell('?','?','?','?',False), Mapping.Cell('?','?','?','?',False), Mapping.Cell('?','?','W','?',False),
             Mapping.Cell('W','?','?','W',False), Mapping.Cell('?','?','?','W',False), Mapping.Cell('?','?','?','W',False), Mapping.Cell('?','?','W','W',False)
         ]
-
+        self.shortestPathCounter=-1
+        self.pos=[(0,0),(0,1),(0,2),(0,3),(1,0),(1,1),(1,2),(1,3),(2,0),(2,1),(2,2),(2,3),(3,0),(3,1),(3,2),(3,3)]
+        self.paths=[]
         #GPIO.add_event_detect(self.LENCODER, GPIO.RISING, self.onLeftEncode)
         #GPIO.add_event_detect(self.RENCODER, GPIO.RISING, self.onRightEncode)
 
@@ -52,7 +56,8 @@ class main_menu(servos):
                 #Mapping Menu
             elif int(inputOption) == 5:
                 #pathPlanning Menu
-                print("WORK IN PROGRESS")
+                #print("WORK IN PROGRESS")
+                pathPlanning.shortestPath(self,13,7)
             elif int(inputOption) == 11:
                 self.stopRobot()
             elif inputOption != '99':

@@ -9,7 +9,7 @@ import math
 import RPi.GPIO as GPIO
 from servos import servos
 from tof import tof
-import Mapping
+import Mapping_Lib
 
 
 class Cell(servos):
@@ -163,6 +163,8 @@ class pathPlanning():
         print("*************inside moveTheRobot***********************")
         stepsCnt=len(self.paths[self.shortestPathCounter])
         prevStep=self.paths[self.shortestPathCounter][0]
+        prevLeft=0
+        prevRight=0
         for steps in range(stepsCnt):
             print("******************************")
             print(steps,"  ",self.paths[self.shortestPathCounter][steps])
@@ -175,20 +177,41 @@ class pathPlanning():
                 nextStep=self.paths[self.shortestPathCounter][steps]
                 diff=prevStep-nextStep
                 print("diff: ",diff)
-                if diff == 4:
-                    print("move up")
-                    print("orient:",Mapping.orient)
-                    Mapping.moveForward(self.maze,17,8)
-                if diff == -4:
-                    print("move right")
-                    print("orient:",Mapping.orient)
-                    Mapping.moveRight(self.maze)
-                if diff == -1:
-                    print("move right")
-                    print("orient:",Mapping.orient)
-                    Mapping.moveRight(self.maze)
-                if diff == 1:
-                    print("move left")
+                                
+                if diff ==-1:
+                    print("inside diff==-1",prevRight,"  ",prevLeft)
+                    if prevRight==0:
+                        Mapping_Lib.rotateRight(self.maze)
+                        prevRight=1
+                    Mapping_Lib.moveForward(self.maze,17,8)
+                    prevLeft=0
+
+                if diff ==4:
+                    print("inside diff==4",prevRight,"  ",prevLeft)
+                    if prevLeft==0:                    
+                        Mapping_Lib.rotateLeft(self.maze)
+                        prevLeft=1
+                    Mapping_Lib.moveForward(self.maze,17,8)
+                    prevRight=0
+
+                if diff ==1:
+                    print("inside diff==1",prevRight,"  ",prevLeft)
+                    if prevLeft==0:
+                        Mapping_Lib.rotateLeft(self.maze)
+                        prevLeft=1
+                    Mapping_Lib.moveForward(self.maze,17,8)
+                    prevRight=0
+
+                if diff ==-4:
+                    print("inside diff==-4",prevRight,"  ",prevLeft)
+                    if prevRight==0:                    
+                        Mapping_Lib.rotateRight(self.maze)
+                        prevRight=1
+                    Mapping_Lib.moveForward(self.maze,17,8)
+                    prevLeft=0
+                
+                
+
 
 
     def path(self,dir,start,end):
@@ -310,4 +333,4 @@ class pathPlanning():
 
 obj=pathPlanning()
 #obj.StartExecute(13,7)
-obj.shortestPath(13,7)
+#obj.shortestPath(13,7)
